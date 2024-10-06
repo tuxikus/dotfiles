@@ -1,0 +1,20 @@
+#+title: User Dirs config
+#+author: tuxikus
+#+date: <2024-05-16 Thu>
+#+property: header-args :noeval :tangle user-dirs/.config/user-dirs.dirs :mkdirp yes
+#+startup: overview
+#+auto_tangle: t
+
+#+begin_src conf
+
+XDG_DESKTOP_DIR="$HOME/temp"
+XDG_DOWNLOAD_DIR="$HOME/temp"
+XDG_DOWNLOADS_DIR="$HOME/temp"
+XDG_TEMPLATES_DIR="$HOME/temp"
+XDG_PUBLICSHARE_DIR="$HOME/temp"
+XDG_DOCUMENTS_DIR="$HOME/temp"
+XDG_MUSIC_DIR="$HOME/media/music"
+XDG_PICTURES_DIR="$HOME/media/pictures"
+XDG_VIDEOS_DIR="$HOME/media/videos"
+
+#+end_src

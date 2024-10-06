@@ -1,0 +1,81 @@
+#+title: Waybar config
+#+author: tuxikus
+#+date: <2024-05-17 Fri>
+#+property: header-args :noeval :mkdirp yes
+#+startup: overview
+
+* Simple black & white
+** config
+#+begin_src json :tangle waybar/.config/waybar/config
+{
+    "layer": "top",
+    "position": "top",
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["custom/screenshot" ,"memory", "cpu", "clock"],
+    "clock": {
+        "format": "[ {:%a %b %d %H:%M} ]",
+        "tooltip": false,
+        "on-click": "alacritty -e $HOME/.local/bin/waybar/wb-calendar"
+    },
+    "memory": {
+        "format": "[ RAM: {}% ]",
+        "on-click": "alacritty -e btop"
+    },
+    "cpu": {
+        "format": "[ CPU: {usage}% ]",
+        "on-click": "alacritty -e btop"
+    },
+    "custom/screenshot": {
+        "format": "[ Screenshot ]",
+        "on-click": "$HOME/.local/bin/waybar/wb-screenshot",
+        "on-click-right": "grim"
+    },
+}
+#+end_src
+
+** style.css
+
+#+begin_src css :tangle waybar/.config/waybar/style.css
+ ,* {
+  font-size: 20px;
+  font-family: "Ubuntu Mono";
+}
+
+window#waybar {
+    background: rgba(0,0,0,1.0);
+}
+
+#window {
+    color: #c5c8c6;
+}
+
+#workspaces button {
+    background-color: black;
+    color: white;
+}
+
+#workspaces button:hover {
+    background-color: white;
+    color: black;
+}
+
+#workspaces button.focused {
+    background-color: white;
+    color: black;
+}
+
+#custom-notification {
+  font-family: "Fira Code";
+}
+
+#cpu,
+#clock,
+#memory,
+#custom-screenshot,
+#workspaces {
+    background: black;
+    color: white;
+}
+
+#+end_src

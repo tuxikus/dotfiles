@@ -1,0 +1,31 @@
+#+title: Lem config
+author: tuxikus
+#+date: <2024-09-05 Thu>
+#+startup: overview
+
+* config.lisp
+
+#+begin_src lisp :tangle lem/.config/lem/config.lisp
+;; theme
+(:COLOR-THEME "spacemacs")
+;; Start in vi-mode
+
+#+end_src
+
+* init.lisp
+
+#+begin_src lisp :tangle lem/.config/lem/init.lisp
+;; Start in vi-mode
+(lem-vi-mode:vi-mode)
+
+
+(defvar *window-management-keymap*
+  (make-keymap :name '*window-management-keymap*)
+  "Keymap for commands related to the frame-multiplexer.")
+
+(define-key *window-management-keymap* "v" 'split-active-window-vertically)
+(define-key *window-management-keymap* "s" 'split-active-window-horizontally)
+(define-key *window-management-keymap* "d" 'delete-active-window)
+
+(define-key *global-keymap* "C-w" *window-management-keymap*)
+#+end_src

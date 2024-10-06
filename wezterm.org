@@ -1,0 +1,84 @@
+#+title: Wezterm
+#+author: tuxikus
+#+date: <2024-10-04 Fri>
+#+startup: overview
+
+* config
+:properties:
+:header-args: :tangle wezterm/.config/wezterm/wezterm.lua :mkdirp yes :noeval
+:end:
+** imports
+#+begin_src lua
+local wezterm = require 'wezterm'
+local config = wezterm.config_builder()
+#+end_src
+** color theme
+#+begin_src lua
+config.color_scheme = 'Hardcore'
+#+end_src
+** window background opacity
+#+begin_src lua
+config.window_background_opacity = 0.8
+#+end_src
+** disable fancy tab bar
+#+begin_src lua
+config.use_fancy_tab_bar = false
+#+end_src
+** font
+#+begin_src lua
+config.font = wezterm.font 'Ubuntu Mono'
+config.font_size = 20.0
+#+end_src
+** launch menu
+#+begin_src lua
+config.launch_menu = {
+  { args = { 'emacs' }, },
+  { args = { 'firefox' }, },
+  { args = { 'top' }, },
+  { args = { 'btop' }, },
+  { label = 'Bash', args = { 'bash', '-l' }, },
+}
+#+end_src
+** keys
+#+begin_src lua
+local act = wezterm.action
+
+wezterm.on('update-right-status', function(window, pane)
+  local name = window:active_key_table()
+  if name then
+    name = 'TABLE: ' .. name
+  end
+  window:set_right_status(name or '')
+end)
+
+config.keys = {
+  { key = 'x', mods = 'ALT', action = act.ShowLauncher },
+  { key = 't', mods = 'CTRL', action = act.ShowTabNavigator },
+  { key = 'w', mods = 'CTRL', action = act.ActivateKeyTable { name = 'pane_mode', one_shot = true, }, },
+}
+
+config.key_tables = {
+  pane_mode = {
+    { key = 'n', action = act.SplitVertical { domain="CurrentPaneDomain" } },
+
+    { key = 'LeftArrow', action = act.ActivatePaneDirection 'Left' },
+    { key = 'h', action = act.ActivatePaneDirection 'Left' },
+
+    { key = 'RightArrow', action = act.ActivatePaneDirection 'Right' },
+    { key = 'l', action = act.ActivatePaneDirection 'Right' },
+
+    { key = 'UpArrow', action = act.ActivatePaneDirection 'Up' },
+    { key = 'k', action = act.ActivatePaneDirection 'Up' },
+
+    { key = 'DownArrow', action = act.ActivatePaneDirection 'Down' },
+    { key = 'j', action = act.ActivatePaneDirection 'Down' },
+
+    { key = 'Escape', action = 'PopKeyTable' },
+  },
+}
+
+#+end_src
+** return config
+#+begin_src lua
+return config
+#+end_src

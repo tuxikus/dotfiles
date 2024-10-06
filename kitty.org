@@ -1,0 +1,103 @@
+#+title: kitty config
+author: tuxikus
+#+date: <2024-10-05 Sat>
+#+startup: overview
+
+* config
+:properties:
+:header-args: :tangle kitty/.config/kitty/kitty.conf :mkdirp yes :noeval
+:end:
+** font
+#+begin_src conf
+font_family     family="Ubuntu Mono"
+font_size       20.0
+#+end_src
+** background
+#+begin_src conf
+background_opacity 0.8
+#+end_src
+** scrollback
+#+begin_src conf
+scrollback_lines 500000
+#+end_src
+** window config
+#+begin_src conf
+window_border_width 2.0pt
+draw_minimal_borders no
+window_margin_width 5
+window_padding_width 5
+#+end_src
+** tab bar
+#+begin_src conf
+tab_bar_edge top
+tab_bar_style powerline
+#+end_src
+** keys
+#+begin_src conf
+kitty_mod ctrl
+
+map kitty_mod+r no_op
+map kitty_mod+c no_op
+#+end_src
+*** window management
+#+begin_src conf
+map --new-mode wm --on-action end kitty_mod+w
+
+map --mode wm n new_window
+map --mode wm d close_window
+
+visual_window_select_characters aoeidrns
+map --mode wm ctrl+w focus_visible_window
+
+map --mode wm h neighboring_window left
+map --mode wm l neighboring_window right
+map --mode wm k neighboring_window top
+map --mode wm j neighboring_window bottom
+
+map --mode wm r start_resizing_window
+
+map --mode wm esc pop_keyboard_mode
+map --mode wm enter pop_keyboard_mode
+#+end_src
+*** tab management
+#+begin_src conf
+map --new-mode tm --on-action end kitty_mod+t
+
+map --mode tm n new_tab
+map --mode tm d close_tab
+map --mode tm w select_tab
+map --mode tm r set_tab_title
+
+map --mode tm esc pop_keyboard_mode
+#+end_src
+*** hints
+#+begin_src conf
+map --new-mode h --on-action end kitty_mod+h
+
+map --mode h u open_url_with_hints
+map --mode h f  kitten hints --type path --program -
+
+map --mode h esc pop_keyboard_mode
+#+end_src
+*** scrolling
+#+begin_src conf
+map --new-mode s kitty_mod+s
+
+map --mode s k scroll_line_up
+map --mode s j scroll_line_down
+
+map --mode s ctrl+u scroll_page_up
+map --mode s ctrl+d scroll_page_down
+
+map --mode s esc pop_keyboard_mode
+#+end_src
+
+*** markers
+#+begin_src conf
+map --new-mode m --on-action end kitty_mod+m
+
+map --mode m n create_marker
+map --mode m d remove_marker
+
+map --mode m esc pop_keyboard_mode
+#+end_src

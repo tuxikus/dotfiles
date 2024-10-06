@@ -1,0 +1,23 @@
+#+title: My personal config files (dotfiles)
+#+author: tuxikus
+#+date: <2024-06-14 Fri>
+#+startup: overview
+
+* Configs
+
+| [[file:doom.org][Emacs (Doom)]] | [[file:alacritty.org][Alacritty]]             | [[file:bash.org][Bash]]                 |
+| [[file:sway.org][Sway]]         | [[file:lem.org][Lem]]                   | [[file:waybar.org][Waybar]]               |
+| [[file:wofi.org][Wofi]]         | [[file:xdg-mime.org][XDG MIME Applications]] | [[file:user-dirs.org][XDG User Directories]] |
+| [[file:nvim.org][Neovim]]       | [[file:zellij.org][Zellij]]                | [[file:kitty.org][Kitty]]                |
+| [[file:wezterm.org][WezTerm]]      | [[file:aerospace.org][AeroSpace]]             | [[file:zsh.org][Zsh]]                  |
+
+* Usage
+I use [[https://www.gnu.org/software/stow/][GNU Stow]] ([[https://www.gnu.org/software/stow/manual/stow.html][documentation]]) to handle all my dotfiles. Simply put all .org files in a directory in your $HOME and tangle (org-babel-tangle) them. This will create (via the header-args :mkdirp yes) all needed subdirs. Now you can use stow to link them to your $HOME/.config or $XDG_CONFIG_HOME.
+
+Example:
+#+begin_src shell :noeval
+
+stow -t ~ sway
+
+#+end_src
+-t set the target directory.

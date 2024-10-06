@@ -1,0 +1,59 @@
+#+title: Alacritty config
+#+author: tuxikus
+#+date: <2024-05-14 Tue>
+#+property: header-args :noeval :tangle alacritty/.config/alacritty/alacritty.toml :mkdirp yes
+#+startup: overview
+
+* Window
+#+begin_src toml
+[window]
+opacity = 0.7
+padding = { x = 10, y = 10 }
+#+end_src
+* Font
+#+begin_src toml :noweb yes
+[font]
+size = 20
+normal = { family = "Ubuntu Mono", style = "Regular" }
+#+end_src
+* Cursor
+#+begin_src toml :noweb yes
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+vi_mode_style = { shape = "Block", blinking = "On" }
+#+end_src
+* Colors
+#+begin_src toml
+# Colors (Hyper)
+# Default colors
+[colors.primary]
+background = '#000000'
+foreground = '#ffffff'
+
+[colors.cursor]
+text = '#F81CE5'
+cursor = '#ffffff'
+
+# Normal colors
+[colors.normal]
+black   = '#000000'
+red     = '#fe0100'
+green   = '#33ff00'
+yellow  = '#feff00'
+blue    = '#0066ff'
+magenta = '#cc00ff'
+cyan    = '#00ffff'
+white   = '#d0d0d0'
+
+# Bright colors
+[colors.bright]
+black   = '#808080'
+red     = '#fe0100'
+green   = '#33ff00'
+yellow  = '#feff00'
+blue    = '#0066ff'
+magenta = '#cc00ff'
+cyan    = '#00ffff'
+white   = '#FFFFFF'
+#+end_src
+
