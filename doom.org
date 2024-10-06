@@ -25,8 +25,8 @@
 (require 'config-line-numbers)
 (require 'config-window-borders)
 (require 'config-doom-dashboard)
-(require 'config-easy-bookmarks)
 (require 'config-random-fancy-splash-image)
+(require 'config-uncomplicated-web-bookmark-management)
 
 ;; packages
 (require 'org-changer)
@@ -436,15 +436,6 @@
 ;;; config-doom-dashboard.el ends here
 #+end_src
 
-** config-easy-bookmarks.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-easy-bookmarks.el
-;;; config-easy-bookmarks.el -*- lexical-binding: t; -*-
-(setq easy-bookmarks-bookmark-file "~/.bookmarks.org")
-
-(provide 'config-easy-bookmarks)
-;;; config-easy-bookmarks.el ends here
-#+end_src
-
 ** config-random-fancy-splash-image.el
 #+begin_src elisp :tangle doom/.config/doom/config/config-random-fancy-splash-image.el
 ;;; config-random-fancy-splash-image.el -*- lexical-binding: t; -*-
@@ -452,6 +443,15 @@
 
 (provide 'config-random-fancy-splash-image)
 ;;; config-random-fancy-splash-image.el ends here
+#+end_src
+
+** config-uncomplicated-web-bookmark-management.el
+#+begin_src elisp :tangle doom/.config/doom/config/config-uncomplicated-web-bookmark-management.el
+;;; config-uncomplicated-web-bookmark-management.el -*- lexical-binding: t; -*-
+(setq uncomplicated-web-bookmark-management-bookmark-file "~/.bookmarks.org")
+
+(provide 'config-uncomplicated-web-bookmark-management)
+;;; config-uncomplicated-web-bookmark-management.el ends here
 #+end_src
 
 * Custom themes
