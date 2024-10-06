@@ -30,8 +30,8 @@
 
 ;; packages
 (require 'org-changer)
-(require 'easy-bookmarks)
-(require 'random-fancy-splash-image)
+(require 'rfsi)
+(require 'uwbm)
 #+end_src
 ** init.el
 :PROPERTIES:
