@@ -5,7 +5,7 @@
 
 * Main doom config files
 ** config.el
-#+begin_src elisp :tangle doom/.config/doom/config.el :mkdirp yes :noweb yes
+#+begin_src elisp :tangle doom/.config/doom/config.el :mkdirp yes
 ;; add all config-*.el files to the load-path
 (add-to-list 'load-path (concat doom-user-dir "config/"))
 
@@ -20,18 +20,18 @@
 (require 'config-dired)
 (require 'config-vertico)
 ;;(require 'config-roswell)
-(require 'config-org-changer)
 (require 'config-transparent)
 (require 'config-line-numbers)
 (require 'config-window-borders)
 (require 'config-doom-dashboard)
+(require 'config-change-org-directory)
+(require 'config-uncomplicated-bookmarks)
 (require 'config-random-fancy-splash-image)
-(require 'config-uncomplicated-web-bookmark-management)
 
-;; packages
-(require 'org-changer)
-(require 'rfsi)
-(require 'uwbm)
+;; lisp
+(require 'change-org-directory)
+(require 'random-fancy-splash-image)
+(require 'uncomplicated-bookmarks)
 #+end_src
 ** init.el
 :PROPERTIES:
@@ -303,7 +303,7 @@
 ** config-font.el
 #+begin_src elisp :tangle doom/.config/doom/config/config-font.el
 ;;; config-font.el -*- lexical-binding: t; -*-
-(setq doom-font (font-spec :family "Ubuntu Mono" :size 24))
+(setq doom-font (font-spec :family "Ubuntu Mono" :size 18))
 
 (provide 'config-font)
 ;;; config-font.el ends here
@@ -383,15 +383,6 @@
 ;;; config-roswell.el ends here
 #+end_src
 
-** config-org-changer.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-org-changer.el
-;;; config-org-changer.el -*- lexical-binding: t; -*-
-(setq org-changer-org-directories '("~/org" "~/org-edu"))
-
-(provide 'config-org-changer)
-;;; config-org-changer.el ends here
-#+end_src
-
 ** config-transparent.el
 #+begin_src elisp :tangle doom/.config/doom/config/config-transparent.el
 ;;; config-transparent.el -*- lexical-binding: t; -*-
@@ -436,6 +427,14 @@
 ;;; config-doom-dashboard.el ends here
 #+end_src
 
+** config-change-org-directory.el
+#+begin_src elisp :tangle doom/.config/doom/config/config-change-org-directory.el
+;;; config-change-org-directory.el -*- lexical-binding: t; -*-
+(setq change-org-directory-org-directories '("~/org" "~/org-edu"))
+
+(provide 'config-change-org-directory)
+;;; config-change-org-directory.el ends here
+#+end_src
 ** config-random-fancy-splash-image.el
 #+begin_src elisp :tangle doom/.config/doom/config/config-random-fancy-splash-image.el
 ;;; config-random-fancy-splash-image.el -*- lexical-binding: t; -*-
@@ -445,15 +444,86 @@
 ;;; config-random-fancy-splash-image.el ends here
 #+end_src
 
-** config-uncomplicated-web-bookmark-management.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-uncomplicated-web-bookmark-management.el
-;;; config-uncomplicated-web-bookmark-management.el -*- lexical-binding: t; -*-
+** config-uncomplicated-bookmarks.el
+#+begin_src elisp :tangle doom/.config/doom/config/config-uncomplicated-bookmarks.el
+;;; config-uncomplicated-bookmarks.el -*- lexical-binding: t; -*-
 (setq uncomplicated-web-bookmark-management-bookmark-file "~/.bookmarks.org")
 
-(provide 'config-uncomplicated-web-bookmark-management)
-;;; config-uncomplicated-web-bookmark-management.el ends here
+(provide 'config-uncomplicated-bookmarks)
+;;; config-uncomplicated-bookmarks.el ends here
 #+end_src
+* Lisp
+** random-fancy-splash-image
+#+begin_src elisp :tangle doom/.config/doom/lisp/random-fancy-splash-image.el :mkdirp yes
+(defun random-fancy-splash-image--get-random-image-path ()
+  "Return a random image from the random-fancy-splash-image-directory."
+  (let* ((images (directory-files random-fancy-splash-image-directory))
+         (images (delete "." images))
+         (images (delete ".." images)))
+    (concat random-fancy-splash-image-directory (nth (random (length images)) images))))
 
+(setq fancy-splash-image (random-fancy-splash-image--get-random-image-path))
+(provide 'random-fancy-splash-image)
+#+end_src
+** change-org-directory
+#+begin_src elisp elisp :tangle doom/.config/doom/lisp/change-org-directory.el
+(defun change-org-directory ()
+  "Change the active org directory."
+  (interactive)
+  (let ((selection (completing-read "Select: " change-org-directory-org-directories)))
+    (setq org-directory selection
+          org-attach-id-dir (concat org-directory "/.attach")
+          org-roam-directory (concat org-directory "/roam")
+          org-roam-db-location (concat org-directory "/org-roam.db"))))
+(provide 'change-org-directory)
+#+end_src
+** uncomplicated-bookmarks
+#+begin_src elisp :tangle doom/.config/doom/lisp/uncomplicated-bookmarks.el
+(defun uncomplicated-bookmarks--get-bookmarks-from-file ()
+  "Get bookmarks from the bookmark file"
+  (with-temp-buffer
+    (insert-file-contents uncomplicated-bookmarks-bookmark-file)
+    (org-mode)
+    (let (bookmarks)
+      (org-element-map (org-element-parse-buffer) 'link
+        (lambda (l)
+          (let* ((link (org-element-property :raw-link l))
+                 (name (org-element-interpret-data (org-element-contents l)))
+                 (tags (org-element-property :tags (org-element-property :parent l))))
+            (push (concat name
+                          "\n"
+                          link
+                          "\n"
+                          (format "[%s]" (mapconcat #'identity tags ", "))) bookmarks))))
+      bookmarks)))
+
+(defun uncomplicated-bookmarks-add ()
+  "Add a new bookmark to the bookmark file."
+  (interactive)
+  (let* ((title (read-from-minibuffer "Title: "))
+         (url (read-from-minibuffer "URL: "))
+         (tags (read-from-minibuffer "Tags: ")))
+    (write-region (format "* [[%s][%s]] %s" url title tags) nil uncomplicated-bookmarks-bookmark-file 'append)))
+
+(defun uncomplicated-bookmarks-edit ()
+  "TODO implement."
+  (interactive)
+  (message "Not implemented."))
+
+(defun uncomplicated-bookmarks-delete ()
+  "TODO implement."
+  (interactive)
+  (message "Not implemented."))
+
+(defun uncomplicated-bookmarks-open ()
+  "Select a bookmark and open it."
+  (interactive)
+  (browse-url
+   (seq-elt (split-string
+             (completing-read "Open: " (uncomplicated-bookmarks--get-bookmarks-from-file))
+             "\n") 1)))
+(provide 'uncomplicated-bookmarks)
+#+end_src
 * Custom themes
 ** TODO tuxikus-theme.el
 #+begin_src elisp :tangle doom/.config/doom/themes/tuxikus-theme.el :mkdirp yes

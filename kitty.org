@@ -10,7 +10,7 @@ author: tuxikus
 ** font
 #+begin_src conf
 font_family     family="Ubuntu Mono"
-font_size       20.0
+font_size       16.0
 #+end_src
 ** background
 #+begin_src conf
