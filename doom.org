@@ -3,37 +3,189 @@
 #+date: <2024-05-15 Wed>
 #+startup: overview
 
-* Main doom config files
-** config.el
-#+begin_src elisp :tangle doom/.config/doom/config.el :mkdirp yes
-;; add all config-*.el files to the load-path
-(add-to-list 'load-path (concat doom-user-dir "config/"))
+* config.el
+:properties:
+:header-args: :tangle doom/.config/doom/config.el :mkdirp yes
+:end:
+*** Configurations
+**** Org
+#+begin_src elisp
+(setq org-directory "~/org/")
 
-;; configs
-(require 'config-org)
-(require 'config-yas)
-(require 'config-font)
-(require 'config-path)
-(require 'config-yaml)
-(require 'config-babel)
-(require 'config-theme)
-(require 'config-dired)
-(require 'config-vertico)
-;;(require 'config-roswell)
-(require 'config-transparent)
-(require 'config-line-numbers)
-(require 'config-window-borders)
-(require 'config-doom-dashboard)
-(require 'config-change-org-directory)
-(require 'config-uncomplicated-bookmarks)
-(require 'config-random-fancy-splash-image)
+;; modern
+(with-eval-after-load 'org (global-org-modern-mode))
 
-;; lisp
-(require 'change-org-directory)
-(require 'random-fancy-splash-image)
-(require 'uncomplicated-bookmarks)
+;; log time of done
+(setq org-log-done 'time)
+
+;; roam
+(setq org-roam-directory (concat org-directory "roam/")
+      org-roam-db-location (concat org-roam-directory "org-roam.db"))
+
+;; org roam ui
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+;; pomodoro
+(setq org-pomodoro-length 45
+      org-pomodoro-short-break-length 5
+      org-pomodoro-long-break-length 15)
+
+;; better org download timestamp
+(after! org-download (setq org-download-timestamp "%Y%m%d-%H%M%S-"))
+
+;; property inheritance
+;;(setq org-use-property-inheritance t)
+
+;; habits
+;;(add-to-list 'org-config 'org-habit t)
+;;(setq org-habit-show-all-today t)
 #+end_src
-** init.el
+***** babel
+#+begin_src elisp
+(org-babel-do-load-languages 'org-babel-load-languages '((lua . t)))
+#+end_src
+**** yas
+#+begin_src elisp
+(setq yas-snippet-dirs '("~/.config/doom/snippets"))
+#+end_src
+**** font
+#+begin_src elisp
+(setq doom-font (font-spec :family "Ubuntu Mono" :size 18))
+#+end_src
+**** path
+#+begin_src elisp
+(add-to-list 'load-path "~/.config/doom/lisp/")
+(add-to-list 'exec-path "~/.local/bin/")
+#+end_src
+**** yaml
+#+begin_src elisp
+(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
+#+end_src
+**** theme
+#+begin_src elisp
+(setq doom-theme 'modus-vivendi)
+#+end_src
+**** dired
+#+begin_src elisp
+(setq delete-by-moving-to-trash t trash-directory "~/.local/share/Trash/files/")
+
+;; vim movement in dired
+(general-define-key
+ :states 'normal
+ :keymaps 'dired-mode-map
+ "h" 'dired-up-directory
+ "l" 'dired-find-file
+ "m" 'dired-mark
+ "u" 'dired-unmark)
+#+end_src
+**** line-numbers
+#+begin_src elisp
+(setq display-line-numbers-type 'relative
+      display-line-numbers-width 5)
+#+end_src
+**** window borders
+#+begin_src elisp
+(setq window-divider-default-right-width 3
+      window-divider-default-bottom-width 3)
+
+;; color
+(custom-set-faces! '(vertical-border :foreground "white"))
+#+end_src
+**** doom dashboard
+#+begin_src elisp
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+#+end_src
+*** Functions
+**** tuxikus/get-random-splash-image
+#+begin_src elisp
+(defun tuxikus/get-random-splash-image ()
+  (let* ((images (directory-files (concat doom-private-dir "splash/")))
+         (images (delete "." images))
+         (images (delete ".." images)))
+    (concat (concat doom-private-dir "splash/") (nth (random (length images)) images))))
+
+(setq fancy-splash-image (tuxikus/get-random-splash-image))
+#+end_src
+**** tuxikus/change-org-directory
+#+begin_src elisp
+(defun tuxikus/change-org-directory ()
+  "Change the active org directory."
+  (interactive)
+  (let ((selection (completing-read "Select: " '("~/org" "~/org-edu"))))
+    (setq org-directory selection
+          org-attach-id-dir (concat org-directory "/.attach")
+          org-roam-directory (concat org-directory "/roam")
+          org-roam-db-location (concat org-directory "/org-roam.db"))))
+
+#+end_src
+**** tuxikus/bookmarks
+#+begin_src elisp
+(defun tuxikus/get-bookmarks-from-file ()
+  "Get bookmarks from the bookmark file"
+  (with-temp-buffer
+    (insert-file-contents "~/.bookmarks.org")
+    (org-mode)
+    (let (bookmarks)
+      (org-element-map (org-element-parse-buffer) 'link
+        (lambda (l)
+          (let* ((link (org-element-property :raw-link l))
+                 (name (org-element-interpret-data (org-element-contents l)))
+                 (tags (org-element-property :tags (org-element-property :parent l))))
+            (push (concat name
+                          "\n"
+                          link
+                          "\n"
+                          (format "[%s]" (mapconcat #'identity tags ", "))) bookmarks))))
+      bookmarks)))
+
+(defun tuxikus/add-bookmark ()
+  "Add a new bookmark to the bookmark file."
+  (interactive)
+  (let* ((title (read-from-minibuffer "Title: "))
+         (url (read-from-minibuffer "URL: "))
+         (tags (read-from-minibuffer "Tags: ")))
+    (write-region (format "* [[%s][%s]] %s" url title tags) nil uncomplicated-bookmarks-bookmark-file 'append)))
+
+(defun tuxikus/edit-bookmark ()
+  "TODO implement."
+  (interactive)
+  (message "Not implemented."))
+
+(defun tuxikus/delete-bookmark ()
+  "TODO implement."
+  (interactive)
+  (message "Not implemented."))
+
+(defun tuxikus/open-bookmark ()
+  "Select a bookmark and open it."
+  (interactive)
+  (browse-url
+   (seq-elt (split-string
+             (completing-read "Open: " (tuxikus/get-bookmarks-from-file))
+             "\n") 1)))
+#+end_src
+**** tuxikus/get-jira-ticket-number
+#+begin_src elisp
+(defun tuxikus/get-jira-ticket-number (branch)
+  (when (string-match "[A-Z]\\{8\\}-[0-9]*" branch)
+    (message (match-string 0 branch))))
+
+(add-hook 'git-commit-setup-hook '(lambda () (insert (tuxikus/get-jira-ticket-number) (magit-get-current-branch))))
+#+end_src
+* init.el
 :PROPERTIES:
 :header-args: :tangle (if (string-equal system-type "darwin") "doom/.doom.d/init.el" "doom/.config/doom/init.el") :mkdirp yes
 :END:
@@ -227,306 +379,13 @@
 
 #+end_src
 
-** packages.el
+* packages.el
 :PROPERTIES:
-:header-args: :tangle (if (string-equal system-type "darwin") "doom/.doom.d/packages.el" "doom/.config/doom/packages.el") :mkdirp yes
+:header-args: :tangle doom/.config/doom/packages.el :mkdirp yes
 :END:
-
 #+begin_src emacs-lisp
 (unpin! org-roam)
 (package! org-roam-ui)
 (package! org-modern)
 (package! rg)
-#+end_src
-* Custom configs
-** config-org.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-org.el
-;;; config-org.el -*- lexical-binding: t; -*-
-;; default dir
-(setq org-directory "~/org/")
-
-;; modern
-(with-eval-after-load 'org (global-org-modern-mode))
-
-;; log time of done
-(setq org-log-done 'time)
-
-;; roam
-(setq org-roam-directory (concat org-directory "roam/")
-      org-roam-db-location (concat org-roam-directory "org-roam.db"))
-
-;; org roam ui
-(use-package! websocket
-    :after org-roam)
-
-(use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
-;; pomodoro
-(setq org-pomodoro-length 45
-      org-pomodoro-short-break-length 5
-      org-pomodoro-long-break-length 15)
-
-;; better org download timestamp
-(after! org-download (setq org-download-timestamp "%Y%m%d-%H%M%S-"))
-
-;; property inheritance
-;;(setq org-use-property-inheritance t)
-
-;; habits
-;;(add-to-list 'org-config 'org-habit t)
-;;(setq org-habit-show-all-today t)
-
-
-(provide 'config-org)
-;;; config-org.el ends here
-#+end_src
-
-** config-yas.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-yas.el
-;;; config-yas.el -*- lexical-binding: t; -*-
-(setq yas-snippet-dirs '("~/.config/doom/snippets"))
-
-(provide 'config-yas)
-;;; config-yas.el ends here
-#+end_src
-
-** config-font.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-font.el
-;;; config-font.el -*- lexical-binding: t; -*-
-(setq doom-font (font-spec :family "Ubuntu Mono" :size 18))
-
-(provide 'config-font)
-;;; config-font.el ends here
-#+end_src
-
-** config-path.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-path.el
-;;; config-path.el -*- lexical-binding: t; -*-
-(add-to-list 'load-path "~/.config/doom/lisp/")
-(add-to-list 'exec-path "~/.local/bin/")
-
-(provide 'config-path)
-;;; config-path.el ends here
-#+end_src
-
-** config-yaml.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-yaml.el
-;;; config-yaml.el -*- lexical-binding: t; -*-
-;; enable yaml-mode for salt sls files
-(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
-
-(provide 'config-yaml)
-;;; config-yaml.el ends here
-#+end_src
-
-** config-babel.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-babel.el
-;;; config-babel.el -*- lexical-binding: t; -*-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((lua . t)))
-(provide 'config-babel)
-;;; config-babel.el ends here
-#+end_src
-** config-theme.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-theme.el
-;;; config-theme.el -*- lexical-binding: t; -*-
-(setq doom-theme 'modus-vivendi)
-
-(provide 'config-theme)
-;;; config-theme.el ends here
-#+end_src
-
-** config-dired.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-dired.el
-;;; config-dired.el -*- lexical-binding: t; -*-
-;; move deleted files to trash
-(setq delete-by-moving-to-trash t trash-directory "~/.local/share/Trash/files/")
-
-;; vim movement in dired
-(general-define-key
- :states 'normal
- :keymaps 'dired-mode-map
- "h" 'dired-up-directory
- "l" 'dired-find-file
- "m" 'dired-mark
- "u" 'dired-unmark)
-
-(provide 'config-dired)
-;;; config-dired.el ends here
-#+end_src
-
-** config-vertico.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-vertico.el
-;;; config-vertico.el -*- lexical-binding: t; -*-
-(provide 'config-vertico)
-;;; config-vertico.el ends here
-#+end_src
-
-** config-roswell.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-roswell.el
-;;; config-roswell.el -*- lexical-binding: t; -*-
-(load (expand-file-name "~/.roswell/helper.el"))
-(setq inferior-lisp-program "ros -Q run")
-
-(provide 'config-roswell)
-;;; config-roswell.el ends here
-#+end_src
-
-** config-transparent.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-transparent.el
-;;; config-transparent.el -*- lexical-binding: t; -*-
-(set-frame-parameter nil 'alpha-background 70)
-(add-to-list 'default-frame-alist '(alpha-background . 70))
-
-(provide 'config-transparent)
-;;; config-transparent.el ends here
-#+end_src
-
-** config-line-numbers.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-line-numbers.el
-;;; config-line-numbers.el -*- lexical-binding: t; -*-
-(setq display-line-numbers-type 'relative
-      display-line-numbers-width 5)
-
-(provide 'config-line-numbers)
-;;; config-line-numbers.el ends here
-#+end_src
-
-** config-window-borders.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-window-borders.el
-;;; config-window-borders.el -*- lexical-binding: t; -*-
-;; size
-(setq window-divider-default-right-width 3
-      window-divider-default-bottom-width 3)
-
-;; color
-(custom-set-faces! '(vertical-border :foreground "white"))
-
-(provide 'config-window-borders)
-;;; config-window-borders.el ends here
-#+end_src
-
-** config-doom-dashboard.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-doom-dashboard.el
-;;; config-doom-dashboard.el -*- lexical-binding: t; -*-
-;; disable doom dashboard
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-
-(provide 'config-doom-dashboard)
-;;; config-doom-dashboard.el ends here
-#+end_src
-
-** config-change-org-directory.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-change-org-directory.el
-;;; config-change-org-directory.el -*- lexical-binding: t; -*-
-(setq change-org-directory-org-directories '("~/org" "~/org-edu"))
-
-(provide 'config-change-org-directory)
-;;; config-change-org-directory.el ends here
-#+end_src
-** config-random-fancy-splash-image.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-random-fancy-splash-image.el
-;;; config-random-fancy-splash-image.el -*- lexical-binding: t; -*-
-(setq random-fancy-splash-image-directory (concat doom-private-dir "splash/"))
-
-(provide 'config-random-fancy-splash-image)
-;;; config-random-fancy-splash-image.el ends here
-#+end_src
-
-** config-uncomplicated-bookmarks.el
-#+begin_src elisp :tangle doom/.config/doom/config/config-uncomplicated-bookmarks.el
-;;; config-uncomplicated-bookmarks.el -*- lexical-binding: t; -*-
-(setq uncomplicated-web-bookmark-management-bookmark-file "~/.bookmarks.org")
-
-(provide 'config-uncomplicated-bookmarks)
-;;; config-uncomplicated-bookmarks.el ends here
-#+end_src
-* Lisp
-** random-fancy-splash-image
-#+begin_src elisp :tangle doom/.config/doom/lisp/random-fancy-splash-image.el :mkdirp yes
-(defun random-fancy-splash-image--get-random-image-path ()
-  "Return a random image from the random-fancy-splash-image-directory."
-  (let* ((images (directory-files random-fancy-splash-image-directory))
-         (images (delete "." images))
-         (images (delete ".." images)))
-    (concat random-fancy-splash-image-directory (nth (random (length images)) images))))
-
-(setq fancy-splash-image (random-fancy-splash-image--get-random-image-path))
-(provide 'random-fancy-splash-image)
-#+end_src
-** change-org-directory
-#+begin_src elisp elisp :tangle doom/.config/doom/lisp/change-org-directory.el
-(defun change-org-directory ()
-  "Change the active org directory."
-  (interactive)
-  (let ((selection (completing-read "Select: " change-org-directory-org-directories)))
-    (setq org-directory selection
-          org-attach-id-dir (concat org-directory "/.attach")
-          org-roam-directory (concat org-directory "/roam")
-          org-roam-db-location (concat org-directory "/org-roam.db"))))
-(provide 'change-org-directory)
-#+end_src
-** uncomplicated-bookmarks
-#+begin_src elisp :tangle doom/.config/doom/lisp/uncomplicated-bookmarks.el
-(defun uncomplicated-bookmarks--get-bookmarks-from-file ()
-  "Get bookmarks from the bookmark file"
-  (with-temp-buffer
-    (insert-file-contents uncomplicated-bookmarks-bookmark-file)
-    (org-mode)
-    (let (bookmarks)
-      (org-element-map (org-element-parse-buffer) 'link
-        (lambda (l)
-          (let* ((link (org-element-property :raw-link l))
-                 (name (org-element-interpret-data (org-element-contents l)))
-                 (tags (org-element-property :tags (org-element-property :parent l))))
-            (push (concat name
-                          "\n"
-                          link
-                          "\n"
-                          (format "[%s]" (mapconcat #'identity tags ", "))) bookmarks))))
-      bookmarks)))
-
-(defun uncomplicated-bookmarks-add ()
-  "Add a new bookmark to the bookmark file."
-  (interactive)
-  (let* ((title (read-from-minibuffer "Title: "))
-         (url (read-from-minibuffer "URL: "))
-         (tags (read-from-minibuffer "Tags: ")))
-    (write-region (format "* [[%s][%s]] %s" url title tags) nil uncomplicated-bookmarks-bookmark-file 'append)))
-
-(defun uncomplicated-bookmarks-edit ()
-  "TODO implement."
-  (interactive)
-  (message "Not implemented."))
-
-(defun uncomplicated-bookmarks-delete ()
-  "TODO implement."
-  (interactive)
-  (message "Not implemented."))
-
-(defun uncomplicated-bookmarks-open ()
-  "Select a bookmark and open it."
-  (interactive)
-  (browse-url
-   (seq-elt (split-string
-             (completing-read "Open: " (uncomplicated-bookmarks--get-bookmarks-from-file))
-             "\n") 1)))
-(provide 'uncomplicated-bookmarks)
-#+end_src
-* Custom themes
-** TODO tuxikus-theme.el
-#+begin_src elisp :tangle doom/.config/doom/themes/tuxikus-theme.el :mkdirp yes
-
-
 #+end_src

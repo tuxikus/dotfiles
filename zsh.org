@@ -21,15 +21,30 @@ autoload -Uz compinit
 compinit
 #+end_src
 
-** prompt
+** path
 #+begin_src zsh
-PROMPT="%~ 🔮 "
+if [ -d "$HOME/.local/bin" ]; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -d "$HOME/.config/emacs/bin" ]; then
+    PATH="$HOME/.config/emacs/bin:$PATH"
+fi
+
+if [ -d "$HOME/.qlot/bin" ]; then
+    PATH="$HOME/.qlot/bin:$PATH"
+fi
 #+end_src
+
 ** history
 #+begin_src zsh
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
+#+end_src
+** prompt
+#+begin_src zsh
+PROMPT="%~ 🔮 "
 #+end_src
 ** enable fzf
 #+begin_src zsh
@@ -48,11 +63,10 @@ alias ll='ls -l --color=auto'
 alias ls='ls --color=auto'
 alias ff='fastfetch'
 alias lsblk-full='lsblk -o name,mountpoint,fstype,label,size,uuid'
-alias zellij='zellij --layout compact'
-alias tmux='zellij'
-alias z='zellij'
 alias dnf-list-fuzzy='dnf list | fzf'
 alias dnf-info-fuzzy='dnf info $(dnf list | fzf)'
+alias rzsh='source $HOME/.zshrc'
+alias t='tmux'
 #+end_src
 
 ** env
@@ -60,23 +74,52 @@ alias dnf-info-fuzzy='dnf info $(dnf list | fzf)'
 export VISUAL=emacs;
 export EDITOR=emacs;
 #+end_src
-** path
-#+begin_src zsh
-if [ -d "$HOME/.local/bin" ]; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-if [ -d "$HOME/.config/emacs/bin" ]; then
-    PATH="$HOME/.config/emacs/bin:$PATH"
-fi
-
-if [ -d "$HOME/.qlot/bin" ]; then
-    PATH="$HOME/.qlot/bin:$PATH"
-fi
-#+end_src
-
 ** functions
 #+begin_src zsh
+
+export PROJECT_DIR="$HOME/work/projects"
+cdp() {
+    cd "$(find $PROJECT_DIR -maxdepth 1 | fzf)"
+}
+
+rfe() {
+    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+        fzf --ansi \
+            --color "hl:-1:underline,hl+:-1:underline:reverse" \
+            --delimiter : \
+            --preview 'bat --color=always {1} --highlight-line {2}' \
+            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+            --bind 'enter:become(emacsclient {1})'
+}
+
+rfv() {
+    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+        fzf --ansi \
+            --color "hl:-1:underline,hl+:-1:underline:reverse" \
+            --delimiter : \
+            --preview 'bat --color=always {1} --highlight-line {2}' \
+            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+            --bind 'enter:become(nvim {1} +{2})'
+}
+
+tn() {
+    echo "Session name: "
+    read  name
+    tmux new-session -s "$name"
+}
+
+ts() {
+    if test -z "$TMUX"; then
+        tmux attach -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
+    else
+        tmux switch -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
+    fi
+}
+
+tk() {
+    tmux kill-session -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
+}
+
 zellij-sessions () {
     ZJ_SESSIONS=$(zellij list-sessions)
     NO_SESSIONS=$(echo "${ZJ_SESSIONS}" | wc -l)
