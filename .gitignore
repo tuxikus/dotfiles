@@ -2,7 +2,8 @@
 .idea
 *.log
 tmp/
-doom/
+doom/.config/doom/splash
+doom/.config/doom/snippets
 lem/
 bash/
 sway/
