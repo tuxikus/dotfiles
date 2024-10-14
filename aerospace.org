@@ -11,6 +11,9 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+[key-mapping]
+preset = 'dvorak'
+
 [gaps]
 inner.horizontal = 13
 inner.vertical =   13
