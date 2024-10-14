@@ -1,28 +1,6 @@
-#+title: Zsh config
-#+author: tuxikus
-#+date: <2024-08-12 Mon>
-#+startup: overview
-
-* .zprofile
-:PROPERTIES:
-:header-args: :tangle zsh/.zprofile :mkdirp yes
-:END:
-** umask
-#+begin_src shell
-umask 0022
-#+end_src
-* .zshrc
-:PROPERTIES:
-:header-args: :tangle zsh/.zshrc :mkdirp yes
-:END:
-** completion
-#+begin_src zsh
 autoload -Uz compinit
 compinit
-#+end_src
 
-** path
-#+begin_src zsh
 if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
@@ -35,27 +13,14 @@ if [ -d "$HOME/.qlot/bin" ]; then
     PATH="$HOME/.qlot/bin:$PATH"
 fi
 
-if [ -d "/opt/homebrew/bin" ]; then
-    PATH="/opt/homebrew/bin:$PATH"
-fi
-#+end_src
-
-** history
-#+begin_src zsh
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
-#+end_src
-** prompt
-#+begin_src zsh
+
 PROMPT="%~ 🔮 "
-#+end_src
-** enable fzf
-#+begin_src zsh
+
 source <(fzf --zsh)
-#+end_src
-** alias
-#+begin_src zsh
+
 alias ls='ls -G'
 alias ll='ls -lah'
 alias python='python3'
@@ -70,15 +35,9 @@ alias dnf-list-fuzzy='dnf list | fzf'
 alias dnf-info-fuzzy='dnf info $(dnf list | fzf)'
 alias szrc='source $HOME/.zshrc'
 alias t='tmux'
-#+end_src
 
-** env
-#+begin_src zsh
 export VISUAL=emacs;
 export EDITOR=emacs;
-#+end_src
-** functions
-#+begin_src zsh
 
 export PROJECT_DIR="$HOME/work/projects"
 cdp() {
@@ -133,4 +92,3 @@ zellij-sessions () {
         zellij attach -c
     fi
 }
-#+end_src

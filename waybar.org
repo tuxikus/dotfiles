@@ -5,7 +5,7 @@
 #+startup: overview
 
 * Simple black & white
-** config
+** COMMENT config
 #+begin_src json :tangle waybar/.config/waybar/config
 {
     "layer": "top",
@@ -34,8 +34,7 @@
 }
 #+end_src
 
-** style.css
-
+** COMMENT style.css
 #+begin_src css :tangle waybar/.config/waybar/style.css
  ,* {
   font-size: 20px;
@@ -78,4 +77,480 @@ window#waybar {
     color: white;
 }
 
+#+end_src
+
+* Catppuchin v1
+[[https://github.com/Srinath10X/catppuccin-waybar][GitHub]]
+** config
+#+begin_src json :tangle waybar/.config/waybar/config
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["custom/music"],
+    "modules-right": ["pulseaudio", "clock"],
+    "sway/workspaces": {
+         "disable-scroll": true,
+         "sort-by-name": true,
+         "format": " {icon} ",
+         "format-icons": {
+             "default": "",
+         },
+     },
+    "custom/music": {
+        "format": " {}",
+        "escape": true,
+        "interval": 5,
+        "tooltip": false,
+        "exec": "playerctl metadata --format='{{ title }}'",
+        "on-click": "playerctl play-pause",
+        "max-length": 50
+    },
+    "clock": {
+        "timezone": "Europe/Berlin",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": " {:%d/%m/%Y}",
+        "format": " {:%H:%M}"
+    },
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{icon} {volume}%",
+        "format-muted": "",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+    },
+}
+#+end_src
+
+** mocha colors
+#+begin_src css :tangle waybar/.config/waybar/mocha.css
+@define-color base   #1e1e2e;
+@define-color mantle #181825;
+@define-color crust  #11111b;
+
+@define-color text     #cdd6f4;
+@define-color subtext0 #a6adc8;
+@define-color subtext1 #bac2de;
+
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+
+@define-color overlay0 #6c7086;
+@define-color overlay1 #7f849c;
+@define-color overlay2 #9399b2;
+
+@define-color blue      #89b4fa;
+@define-color lavender  #b4befe;
+@define-color sapphire  #74c7ec;
+@define-color sky       #89dceb;
+@define-color teal      #94e2d5;
+@define-color green     #a6e3a1;
+@define-color yellow    #f9e2af;
+@define-color peach     #fab387;
+@define-color maroon    #eba0ac;
+@define-color red       #f38ba8;
+@define-color mauve     #cba6f7;
+@define-color pink      #f5c2e7;
+@define-color flamingo  #f2cdcd;
+@define-color rosewater #f5e0dc;
+#+end_src
+** style.css
+#+begin_src css :tangle waybar/.config/waybar/style.css
+@import "mocha.css";
+
+ * {
+  font-family: BlexMono Nerd Font;
+  font-size: 16px;
+  min-height: 0;
+}
+
+#waybar {
+  background: transparent;
+  color: @text;
+  margin: 5px 5px;
+}
+
+#workspaces {
+  border-radius: 1rem;
+  margin: 5px;
+  background-color: @surface0;
+  margin-left: 1rem;
+}
+
+#workspaces button {
+  color: @lavender;
+  border-radius: 1rem;
+  padding: 0.4rem;
+}
+
+#workspaces button.active {
+  color: @sky;
+  border-radius: 1rem;
+}
+
+#workspaces button:hover {
+  color: @sapphire;
+  border-radius: 1rem;
+}
+
+#custom-music,
+#clock,
+#pulseaudio {
+  background-color: @surface0;
+  padding: 0.5rem 1rem;
+  margin: 5px 0;
+}
+
+#clock {
+  color: @blue;
+  border-radius: 0px 1rem 1rem 0px;
+  margin-right: 1rem;
+}
+
+#battery {
+  color: @green;
+}
+
+#battery.charging {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: @red;
+}
+
+#backlight {
+  color: @yellow;
+}
+
+#backlight, #battery {
+    border-radius: 0;
+}
+
+#pulseaudio {
+  color: @maroon;
+  border-radius: 1rem 0px 0px 1rem;
+  margin-left: 1rem;
+}
+
+#custom-music {
+  color: @mauve;
+  border-radius: 1rem;
+}
+
+#+end_src
+
+* Catppuchin v2
+[[https://github.com/Srinath10X/catppuccin-waybar][GitHub]]
+** COMMENT config
+#+begin_src json :tangle waybar/.config/waybar/config
+{
+  "layer": "top",
+  "position": "top",
+  "mod": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "height": 40,
+  "modules-left": ["custom/launch_wofi", "sway/workspaces"],
+  "modules-right": [
+    "pulseaudio",
+    "backlight",
+    "network",
+    "battery",
+    "clock"
+  ],
+  "sway/window": {
+    "format": "{}"
+  },
+
+  "workspace": {
+    "format": " {}",
+    "disable-scroll": false
+  },
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "format": "{icon}",
+    "on-click": "activate",
+    "persistent_workspaces": {
+      "1": "",
+      "2": "",
+      "3": ""
+    },
+    "format-icons": {
+      "active": "  ",
+      "persistent": "  ",
+      "default": "  "
+    }
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 10
+  },
+
+  "clock": {
+    "format": "{: %I:%M %p}",
+    "tooltip-format": "<big>{:  %a,%d %b}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "on-scroll-up": "brightnessctl set 1%+",
+    "on-scroll-down": "brightnessctl set 1%-",
+    "min-length": 6
+  },
+
+  "battery": {
+    "states": {
+      "good": 95,
+      "warning": 30,
+      "critical": 20
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-alt": "{time} {icon}",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "tooltip": false,
+    "format-muted": " Muted",
+    "on-click": "pamixer -t",
+    "on-scroll-up": "pamixer -i 5",
+    "on-scroll-down": "pamixer -d 5",
+    "scroll-step": 5,
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["", "", ""]
+    }
+  },
+
+  "pulseaudio#microphone": {
+    "format": "{format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": " Muted",
+    "on-click": "pamixer --default-source -t",
+    "on-scroll-up": "pamixer --default-source -i 5",
+    "on-scroll-down": "pamixer --default-source -d 5",
+    "scroll-step": 5
+  },
+
+  "temperature": {
+    "thermal-zone": 1,
+    "format": "{temperatureF}°F ",
+    "critical-threshold": 80,
+    "format-critical": "{temperatureC}°C "
+  },
+
+  "network": {
+    // "interface": "wlp2*", // (Optional) To force the use of this interface
+    "format-wifi": "  {signalStrength}%",
+    "format-ethernet": "{ipaddr}/{cidr}",
+    "tooltip-format": "{essid} - {ifname} via {gwaddr}",
+    "format-linked": "{ifname} (No IP)",
+    "format-disconnected": "Disconnected ⚠",
+    "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"
+  },
+
+  "bluetooth": {
+    "format": " {status}",
+    "format-disabled": "", // an empty format will hide the module
+    "format-connected": " {num_connections}",
+    "tooltip-format": "{device_alias}",
+    "tooltip-format-connected": " {device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}"
+  },
+
+  "custom/launch_wofi": {
+    "format": " ",
+    "on-click": "pkill wofi; wofi",
+    "tooltip": false
+  }
+}
+#+end_src
+
+** COMMENT style.css
+#+begin_src css :tangle waybar/.config/waybar/style.css
+ * {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font";
+  font-weight: bold;
+  font-size: 16px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(21, 18, 27, 0);
+  background: #1e1e2e;
+  color: #cdd6f4;
+}
+
+tooltip {
+  background: #1e1e2e;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #11111b;
+}
+
+#workspaces button {
+  padding: 5px;
+  color: #b4befe;
+  margin-right: 5px;
+}
+
+#workspaces button.active {
+  color: #a6adc8;
+  color: #94e2d5;
+}
+
+#workspaces button.focused {
+  color: #a6adc8;
+  background: #eba0ac;
+  border-radius: 10px;
+}
+
+#workspaces button.urgent {
+  color: #11111b;
+  background: #a6e3a1;
+  border-radius: 10px;
+}
+
+#workspaces button:hover {
+  background: #313244;
+  color: #cdd6f4;
+  border-radius: 20px;
+}
+
+#custom-power_profile,
+#window,
+#clock,
+#battery,
+#pulseaudio,
+#network,
+#bluetooth,
+#temperature,
+#workspaces,
+#tray,
+#backlight,
+#custom-launch_wofi {
+  background: #1e1e2e;
+  background: #313244;
+  opacity: 0.8;
+  padding: 0px 10px;
+  margin: 3px 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #181825;
+}
+
+#temperature {
+  border-radius: 10px 0px 0px 10px;
+}
+
+#temperature.critical {
+  color: #eba0ac;
+}
+
+#backlight {
+  border-radius: 0px;
+  border-left: none;
+  border-right: none;
+}
+
+#tray {
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+#workspaces {
+  background: #1e1e2e;
+  background: #313244;
+  border-radius: 15px;
+  margin-left: 10px;
+  padding-right: 0px;
+  padding-left: 5px;
+}
+
+#custom-power_profile {
+  color: #a6e3a1;
+  border-left: 0px;
+  border-right: 0px;
+}
+
+#window {
+  border-radius: 15px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+#clock {
+  color: #fab387;
+  border-radius: 15px;
+  margin-right: 10px;
+  padding: 0 15px;
+  border-right: 0px;
+}
+
+#network {
+  color: #f9e2af;
+  border-radius: 0px 15px 15px 0px;
+  border-left: 0px;
+  border-right: 0px;
+  padding-right: 17px;
+  margin-right: 10px;
+}
+
+#bluetooth {
+  color: #89b4fa;
+  border-radius: 15px;
+  margin-right: 10px;
+}
+
+#pulseaudio {
+  color: #89b4fa;
+  border-left: 0px;
+  border-right: 0px;
+  padding-left: 17px;
+  border-radius: 15px 0px 0px 15px;
+}
+
+#pulseaudio.microphone {
+  color: #cba6f7;
+  border-left: 0px;
+  border-right: 0px;
+  border-radius: 0px 15px 15px 0px;
+  margin-right: 10px;
+}
+
+#battery {
+  color: #a6e3a1;
+  border-radius: 15px;
+  margin-right: 10px;
+  padding: 0 15px;
+  border-left: 0px;
+}
+
+#custom-launch_wofi {
+  border-radius: 15px;
+  color: #89b4fa;
+  margin-left: 10px;
+  padding-right: 10px;
+  padding-left: 15px;
+  border-right: 0px;
+}
 #+end_src

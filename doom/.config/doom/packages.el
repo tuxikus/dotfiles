@@ -2,3 +2,4 @@
 (package! org-roam-ui)
 (package! org-modern)
 (package! rg)
+(package! catppuccin-theme)

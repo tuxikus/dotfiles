@@ -45,14 +45,14 @@
 
 (setq yas-snippet-dirs '("~/.config/doom/snippets"))
 
-(setq doom-font (font-spec :family "Ubuntu Mono" :size 18))
+(setq doom-font (font-spec :family "BlexMono Nerd Font" :size 18))
 
 (add-to-list 'load-path "~/.config/doom/lisp/")
 (add-to-list 'exec-path "~/.local/bin/")
 
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 
-(setq doom-theme 'modus-vivendi)
+(setq doom-theme 'catppuccin)
 
 (setq delete-by-moving-to-trash t trash-directory "~/.local/share/Trash/files/")
 
@@ -117,7 +117,7 @@
   (let* ((title (read-from-minibuffer "Title: "))
          (url (read-from-minibuffer "URL: "))
          (tags (read-from-minibuffer "Tags: ")))
-    (write-region (format "* [[%s][%s]] %s" url title tags) nil uncomplicated-bookmarks-bookmark-file 'append)))
+    (write-region (format "* [[%s][%s]] %s" url title tags) nil "~/.bookmarks.org" 'append)))
 
 (defun tuxikus/edit-bookmark ()
   "TODO implement."
