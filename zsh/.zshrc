@@ -13,6 +13,10 @@ if [ -d "$HOME/.qlot/bin" ]; then
     PATH="$HOME/.qlot/bin:$PATH"
 fi
 
+if [ -d "/opt/homebrew/bin" ]; then
+    PATH="/opt/homebrew/bin:$PATH"
+fi
+
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
