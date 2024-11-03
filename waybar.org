@@ -1,11 +1,7 @@
-#+title: Waybar config
-#+author: tuxikus
-#+date: <2024-05-17 Fri>
-#+property: header-args :noeval :mkdirp yes
-#+startup: overview
-
-* Simple black & white
-** COMMENT config
+* Waybar config
+** sway
+*** Simple black & white
+**** COMMENT config
 #+begin_src json :tangle waybar/.config/waybar/config
 {
     "layer": "top",
@@ -34,7 +30,7 @@
 }
 #+end_src
 
-** COMMENT style.css
+*** COMMENT style.css
 #+begin_src css :tangle waybar/.config/waybar/style.css
  ,* {
   font-size: 20px;
@@ -79,9 +75,9 @@ window#waybar {
 
 #+end_src
 
-* Catppuchin v1
+*** Catppuchin v1
 [[https://github.com/Srinath10X/catppuccin-waybar][GitHub]]
-** config
+**** config
 #+begin_src json :tangle waybar/.config/waybar/config
 {
     "layer": "top", // Waybar at top layer
@@ -123,7 +119,7 @@ window#waybar {
 }
 #+end_src
 
-** mocha colors
+**** mocha colors
 #+begin_src css :tangle waybar/.config/waybar/mocha.css
 @define-color base   #1e1e2e;
 @define-color mantle #181825;
@@ -156,7 +152,7 @@ window#waybar {
 @define-color flamingo  #f2cdcd;
 @define-color rosewater #f5e0dc;
 #+end_src
-** style.css
+**** style.css
 #+begin_src css :tangle waybar/.config/waybar/style.css
 @import "mocha.css";
 
@@ -242,9 +238,9 @@ window#waybar {
 
 #+end_src
 
-* Catppuchin v2
+*** Catppuchin v2
 [[https://github.com/Srinath10X/catppuccin-waybar][GitHub]]
-** COMMENT config
+**** COMMENT config
 #+begin_src json :tangle waybar/.config/waybar/config
 {
   "layer": "top",
@@ -382,7 +378,7 @@ window#waybar {
 }
 #+end_src
 
-** COMMENT style.css
+**** COMMENT style.css
 #+begin_src css :tangle waybar/.config/waybar/style.css
  * {
   border: none;
@@ -553,4 +549,167 @@ tooltip {
   padding-left: 15px;
   border-right: 0px;
 }
+#+end_src
+** hyprland
+*** Catppuchin v1
+[[https://github.com/Srinath10X/catppuccin-waybar][GitHub]]
+**** config
+#+begin_src json :tangle waybar/.config/waybar/config-h
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["custom/music"],
+    "modules-right": ["pulseaudio", "clock"],
+    "hyprland/workspaces": {
+         "disable-scroll": true,
+         "sort-by-name": true,
+         "format": " {icon} ",
+         "format-icons": {
+             "default": "",
+         },
+     },
+    "custom/music": {
+        "format": " {}",
+        "escape": true,
+        "interval": 5,
+        "tooltip": false,
+        "exec": "playerctl metadata --format='{{ title }}'",
+        "on-click": "playerctl play-pause",
+        "max-length": 50
+    },
+    "clock": {
+        "timezone": "Europe/Berlin",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": " {:%d/%m/%Y}",
+        "format": " {:%H:%M}"
+    },
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{icon} {volume}%",
+        "format-muted": "",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+    },
+}
+#+end_src
+
+**** mocha colors
+#+begin_src css :tangle waybar/.config/waybar/mocha.css
+@define-color base   #1e1e2e;
+@define-color mantle #181825;
+@define-color crust  #11111b;
+
+@define-color text     #cdd6f4;
+@define-color subtext0 #a6adc8;
+@define-color subtext1 #bac2de;
+
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+
+@define-color overlay0 #6c7086;
+@define-color overlay1 #7f849c;
+@define-color overlay2 #9399b2;
+
+@define-color blue      #89b4fa;
+@define-color lavender  #b4befe;
+@define-color sapphire  #74c7ec;
+@define-color sky       #89dceb;
+@define-color teal      #94e2d5;
+@define-color green     #a6e3a1;
+@define-color yellow    #f9e2af;
+@define-color peach     #fab387;
+@define-color maroon    #eba0ac;
+@define-color red       #f38ba8;
+@define-color mauve     #cba6f7;
+@define-color pink      #f5c2e7;
+@define-color flamingo  #f2cdcd;
+@define-color rosewater #f5e0dc;
+#+end_src
+**** style.css
+#+begin_src css :tangle waybar/.config/waybar/style.css
+@import "mocha.css";
+
+ * {
+  font-family: BlexMono Nerd Font;
+  font-size: 16px;
+  min-height: 0;
+}
+
+#waybar {
+  background: transparent;
+  color: @text;
+  margin: 5px 5px;
+}
+
+#workspaces {
+  border-radius: 1rem;
+  margin: 5px;
+  background-color: @surface0;
+  margin-left: 1rem;
+}
+
+#workspaces button {
+  color: @lavender;
+  border-radius: 1rem;
+  padding: 0.4rem;
+}
+
+#workspaces button.active {
+  color: @sky;
+  border-radius: 1rem;
+}
+
+#workspaces button:hover {
+  color: @sapphire;
+  border-radius: 1rem;
+}
+
+#custom-music,
+#clock,
+#pulseaudio {
+  background-color: @surface0;
+  padding: 0.5rem 1rem;
+  margin: 5px 0;
+}
+
+#clock {
+  color: @blue;
+  border-radius: 0px 1rem 1rem 0px;
+  margin-right: 1rem;
+}
+
+#battery {
+  color: @green;
+}
+
+#battery.charging {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: @red;
+}
+
+#backlight {
+  color: @yellow;
+}
+
+#backlight, #battery {
+    border-radius: 0;
+}
+
+#pulseaudio {
+  color: @maroon;
+  border-radius: 1rem 0px 0px 1rem;
+  margin-left: 1rem;
+}
+
+#custom-music {
+  color: @mauve;
+  border-radius: 1rem;
+}
+
 #+end_src

@@ -1,18 +1,12 @@
-#+title: Wofi config
-#+author: tuxikus
-#+date: <2024-05-16 Thu>
-#+property: header-args :noeval :mkdirp yes
-#+startup: overview
-#+auto_tangle: t
-
-* config
+* Wofi application launcher
+** config
 #+begin_src conf :tangle wofi/.config/wofi/config
 mode=drun
 allow_images=true
 width=33%
 #+end_src
 
-* COMMENT style.css
+** COMMENT style.css
 
 #+begin_src css :tangle wofi/.config/wofi/style.css
 
@@ -59,7 +53,7 @@ image {
 
 #+end_src
 
-* style.css
+** style.css
 
 #+begin_src css :tangle wofi/.config/wofi/style.css
 @define-color	rosewater  #f5e0dc;

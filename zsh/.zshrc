@@ -25,20 +25,22 @@ PROMPT="%~ 🔮 "
 
 source <(fzf --zsh)
 
-alias ls='ls -G'
-alias ll='ls -lah'
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--multi"
+
+MANROFFOPT="-c"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 alias python='python3'
 alias s='ssh'
-alias saa='eval "$(ssh-agent -s)"'
-alias ska='eval "$(ssh-agent -k)"'
-alias ll='ls -l --color=auto'
 alias ls='ls --color=auto'
+alias ll='ls -l --color=auto'
 alias ff='fastfetch'
-alias lsblk-full='lsblk -o name,mountpoint,fstype,label,size,uuid'
-alias dnf-list-fuzzy='dnf list | fzf'
-alias dnf-info-fuzzy='dnf info $(dnf list | fzf)'
-alias szrc='source $HOME/.zshrc'
-alias t='tmux'
+alias t='tmux new-session -A -s local'
 
 export VISUAL=emacs;
 export EDITOR=emacs;
@@ -56,43 +58,4 @@ rfe() {
             --preview 'bat --color=always {1} --highlight-line {2}' \
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
             --bind 'enter:become(emacsclient {1})'
-}
-
-rfv() {
-    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
-        fzf --ansi \
-            --color "hl:-1:underline,hl+:-1:underline:reverse" \
-            --delimiter : \
-            --preview 'bat --color=always {1} --highlight-line {2}' \
-            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-            --bind 'enter:become(nvim {1} +{2})'
-}
-
-tn() {
-    echo "Session name: "
-    read  name
-    tmux new-session -s "$name"
-}
-
-ts() {
-    if test -z "$TMUX"; then
-        tmux attach -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
-    else
-        tmux switch -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
-    fi
-}
-
-tk() {
-    tmux kill-session -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
-}
-
-zellij-sessions () {
-    ZJ_SESSIONS=$(zellij list-sessions)
-    NO_SESSIONS=$(echo "${ZJ_SESSIONS}" | wc -l)
-
-    if [ "${NO_SESSIONS}" -ge 2 ]; then
-        zellij attach "$(echo "${ZJ_SESSIONS}" | fzf --ansi | awk '{print $1}')"
-    else
-        zellij attach -c
-    fi
 }

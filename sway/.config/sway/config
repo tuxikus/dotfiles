@@ -32,7 +32,7 @@ bindsym Mod4+q kill
 
 floating_modifier $mod normal
 
-bindsym $mod+Return exec $term
+bindsym $mod+s exec $term
 
 bindsym Mod4+Space exec $menu
 

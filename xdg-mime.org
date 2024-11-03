@@ -1,11 +1,5 @@
-#+title: XDG MIME config
-#+author: tuxikus
-#+date: <2024-05-16 Thu>
-#+property: header-args :noeval :tangle mimeapps/.config/mimeapps.list :mkdirp yes
-#+startup: overview
-
-* mimeapps.list
-
+* XDG MIME config
+** mimeapps.list
 #+begin_src conf
 [Default Applications]
 audio/mpeg=mpv.desktop

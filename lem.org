@@ -1,23 +1,33 @@
-#+title: Lem config
-author: tuxikus
-#+date: <2024-09-05 Thu>
-#+startup: overview
-
-* config.lisp
+* Lem text editor
+** config.lisp
 
 #+begin_src lisp :tangle lem/.config/lem/config.lisp
 ;; theme
-(:COLOR-THEME "spacemacs")
+;;(:COLOR-THEME "spacemacs")
 ;; Start in vi-mode
 
 #+end_src
 
-* init.lisp
+** init.lisp
 
 #+begin_src lisp :tangle lem/.config/lem/init.lisp
 ;; Start in vi-mode
 (lem-vi-mode:vi-mode)
 
+;; show completion list instand
+(add-hook *prompt-after-activate-hook*
+          (lambda ()
+            (call-command 'lem/prompt-window::prompt-completion nil)))
+
+(add-hook *prompt-deactivate-hook*
+          (lambda ()
+            (lem/completion-mode:completion-end)))
+
+
+;; completion list position
+(setf lem-core::*default-prompt-gravity* :bottom-display)
+(setf lem/prompt-window::*prompt-completion-window-gravity* :horizontally-above-window)
+(setf lem/prompt-window::*fill-width* t)
 
 (defvar *window-management-keymap*
   (make-keymap :name '*window-management-keymap*)

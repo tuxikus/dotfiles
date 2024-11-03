@@ -1,9 +1,5 @@
-#+title: tmux
-#+author: tuxikus
-#+date: <2024-10-10 Thu>
-#+startup: overview
-
-* tmux.conf
+* tmux terminal multiplexer
+** tmux.conf
 :properties:
 :header-args: :tangle tmux/.tmux.conf :mkdirp yes
 :end:
@@ -48,6 +44,8 @@ run ~/.config/tmux/plugins/tmux/catppuccin.tmux`
 set -g status-left ""
 set -g status-right "#{E:@catppuccin_status_user}"
 set -ag status-right "#{E:@catppuccin_status_directory}"
+
+set-option -g default-shell /usr/bin/fish
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'

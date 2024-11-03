@@ -1,0 +1,205 @@
+* The friendly interactive shell (fish)
+** config.fish
+:properties:
+:header-args: :tangle fish/.config/fish/config.fish :mkdirp yes
+:end:
+*** interactive shell
+#+begin_src shell
+if status is-interactive
+   # Commands to run in interactive sessions can go here
+   set -U fish_greeting ""
+   fzf --fish | source
+end
+#+end_src
+*** PATH
+#+begin_src shell
+if test -d $HOME/.local/bin
+   fish_add_path $HOME/.local/bin
+end
+
+if test -d $HOME/.config/emacs/bin
+   fish_add_path $HOME/.config/emacs/bin
+end
+
+if test -d $HOME/.qlot/bin
+   fish_add_path $HOME/.qlot/bin
+end
+
+if test -d /opt/homebrew/bin
+   fish_add_path /opt/homebrew/bin
+end
+#+end_src
+*** alias
+#+begin_src shell
+alias s="ssh"
+#+end_src
+** functions
+*** fish_prompt
+#+begin_src shell :tangle fish/.config/fish/functions/fish_prompt.fish
+function fish_prompt
+    set -l __last_command_exit_status $status
+
+    if not set -q -g __fish_arrow_functions_defined
+        set -g __fish_arrow_functions_defined
+        function _git_branch_name
+            set -l branch (git symbolic-ref --quiet HEAD 2>/dev/null)
+            if set -q branch[1]
+                echo (string replace -r '^refs/heads/' '' $branch)
+            else
+                echo (git rev-parse --short HEAD 2>/dev/null)
+            end
+        end
+
+        function _is_git_dirty
+            not command git diff-index --cached --quiet HEAD -- &>/dev/null
+            or not command git diff --no-ext-diff --quiet --exit-code &>/dev/null
+        end
+
+        function _is_git_repo
+            type -q git
+            or return 1
+            git rev-parse --git-dir >/dev/null 2>&1
+        end
+
+        function _hg_branch_name
+            echo (hg branch 2>/dev/null)
+        end
+
+        function _is_hg_dirty
+            set -l stat (hg status -mard 2>/dev/null)
+            test -n "$stat"
+        end
+
+        function _is_hg_repo
+            fish_print_hg_root >/dev/null
+        end
+
+        function _repo_branch_name
+            _$argv[1]_branch_name
+        end
+
+        function _is_repo_dirty
+            _is_$argv[1]_dirty
+        end
+
+        function _repo_type
+            if _is_hg_repo
+                echo hg
+                return 0
+            else if _is_git_repo
+                echo git
+                return 0
+            end
+            return 1
+        end
+    end
+
+    set -l cyan (set_color -o cyan)
+    set -l yellow (set_color -o yellow)
+    set -l red (set_color -o red)
+    set -l green (set_color -o green)
+    set -l blue (set_color -o blue)
+    set -l normal (set_color normal)
+
+    set -l arrow_color "$green"
+    if test $__last_command_exit_status != 0
+        set arrow_color "$red"
+    end
+
+    set -l arrow "$arrow_color➜ "
+    if fish_is_root_user
+        set arrow "$arrow_color# "
+    end
+
+    set -l cwd $cyan(basename (prompt_pwd))
+
+    set -l repo_info
+    if set -l repo_type (_repo_type)
+        set -l repo_branch $red(_repo_branch_name $repo_type)
+        set repo_info "$blue $repo_type:($repo_branch$blue)"
+
+        if _is_repo_dirty $repo_type
+            set -l dirty "$yellow ✗"
+            set repo_info "$repo_info$dirty"
+        end
+    end
+
+    echo -n -s $arrow ' '$cwd $repo_info $normal ' '
+end
+#+end_src
+*** keepass with ssh agent
+#+begin_src shell :tangle fish/.config/fish/functions/enable_keepass_ssh_agent.fish
+function enable_keepass_ssh_agent
+    eval (ssh-agent -c)
+    keepassxc &
+end
+#+end_src
+*** cdp
+#+begin_src shell :tangle fish/.config/fish/functions/cdp.fish
+if test -d $HOME/projects
+   set -gx project_dir_1 $HOME/projects
+end
+
+if test -d $HOME/projects/personal
+   set -gx project_dir_2 $HOME/projects/personal
+end
+
+if test -d $HOME/work/projects
+   set -gx project_dir_3 $HOME/work/projects
+end
+
+function cdp
+    cd $(find $project_dir_1 $project_dir_2 $project_dir_3 -maxdepth 1 | fzf)
+end
+#+end_src
+*** rfe
+#+begin_src shell :tangle fish/.config/fish/functions/rfe.fish
+function rfe
+    set args $argv
+    if test (count $args) -eq 0
+        set args "."
+    end
+
+    rg --color=always --line-number --no-heading --smart-case $args |
+        fzf --ansi \
+            --color "hl:-1:underline,hl+:-1:underline:reverse" \
+            --delimiter : \
+            --preview 'bat --color=always {1} --highlight-line {2}' \
+            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+            --bind 'enter:become(emacsclient {1})'
+end
+#+end_src
+** themes
+*** catppuccin mocha
+#+begin_src conf :tangle fish/.config/fish/themes/Catppuccin Mocha.theme :mkdirp yes
+# name: 'Catppuccin Mocha'
+# url: 'https://github.com/catppuccin/fish'
+# preferred_background: 1e1e2e
+
+fish_color_normal cdd6f4
+fish_color_command 89b4fa
+fish_color_param f2cdcd
+fish_color_keyword f38ba8
+fish_color_quote a6e3a1
+fish_color_redirection f5c2e7
+fish_color_end fab387
+fish_color_comment 7f849c
+fish_color_error f38ba8
+fish_color_gray 6c7086
+fish_color_selection --background=313244
+fish_color_search_match --background=313244
+fish_color_option a6e3a1
+fish_color_operator f5c2e7
+fish_color_escape eba0ac
+fish_color_autosuggestion 6c7086
+fish_color_cancel f38ba8
+fish_color_cwd f9e2af
+fish_color_user 94e2d5
+fish_color_host 89b4fa
+fish_color_host_remote a6e3a1
+fish_color_status f38ba8
+fish_pager_color_progress 6c7086
+fish_pager_color_prefix f5c2e7
+fish_pager_color_completion cdd6f4
+fish_pager_color_description 6c7086
+#+end_src

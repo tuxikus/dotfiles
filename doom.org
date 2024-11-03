@@ -1,14 +1,10 @@
-#+title: Doom emacs config
-#+author: tuxikus
-#+date: <2024-05-15 Wed>
-#+startup: overview
-
-* config.el
+* Doom Emacs
+** config.el
 :properties:
 :header-args: :tangle doom/.config/doom/config.el :mkdirp yes
 :end:
-*** Configurations
-**** Org
+**** Configurations
+***** Org
 #+begin_src elisp
 (setq org-directory "~/org/")
 
@@ -24,19 +20,19 @@
 
 ;; org roam ui
 (use-package! websocket
-    :after org-roam)
+  :after org-roam)
 
 (use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+  :after org-roam ;; or :after org
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
 ;; pomodoro
 (setq org-pomodoro-length 45
@@ -52,33 +48,106 @@
 ;; habits
 ;;(add-to-list 'org-config 'org-habit t)
 ;;(setq org-habit-show-all-today t)
+
+;; journal
+(setq org-journal-dir "~/org/journal/"
+      org-journal-date-format "%Y-%m-%d, %a"
+      org-journal-file-format "%Y-%m-%d.org")
+
+;; html export settings
+(setq org-publish-project-alist
+      '(
+        ("www.tuxikus.de"
+         :base-directory "~/projects/personal/tuxikus-website/www.tuxikus.de/"
+         :base-extension "org"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :auto-preamble t
+         )
+        ("emacs.tuxikus.de"
+         :base-directory "~/projects/personal/tuxikus-website/emacs.tuxikus.de/"
+         :base-extension "org"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/emacs/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :auto-preamble t
+         )
+        ("linux.tuxikus.de"
+         :base-directory "~/projects/personal/tuxikus-website/linux.tuxikus.de/"
+         :base-extension "org"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/linux/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :auto-preamble t
+         )
+        ("edu.tuxikus.de"
+         :base-directory "~/projects/personal/tuxikus-website/edu.tuxikus.de/"
+         :base-extension "org"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/edu/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :auto-preamble t
+         )
+        ("edu.tuxikus.de-static"
+         :base-directory "~/projects/personal/tuxikus-website/edu.tuxikus.de/"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/edu/"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+        ("metal.tuxikus.de"
+         :base-directory "~/projects/personal/tuxikus-website/metal.tuxikus.de/"
+         :base-extension "org"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/metal/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :auto-preamble t
+         )
+        ("dotfiles.tuxikus.de"
+         :base-directory "~/projects/personal/tuxikus-website/dotfiles.tuxikus.de/"
+         :base-extension "org"
+         :publishing-directory "~/projects/personal/tuxikus-website/public_html/dotfiles/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :auto-preamble t
+         )
+        ("tuxikus.de" :components ("www.tuxikus.de"
+                                   "emacs.tuxikus.de"
+                                   "edu.tuxikus.de"
+                                   "edu.tuxikus.de-static"
+                                   "metal.tuxikus.de"
+                                   "dotfiles.tuxikus.de"
+                                   "linux.tuxikus.de"))
+        ))
+
 #+end_src
-***** babel
+****** babel
 #+begin_src elisp
 (org-babel-do-load-languages 'org-babel-load-languages '((lua . t)))
 #+end_src
-**** yas
+***** yas
 #+begin_src elisp
 (setq yas-snippet-dirs '("~/.config/doom/snippets"))
 #+end_src
-**** font
+***** font
 #+begin_src elisp
 (setq doom-font (font-spec :family "BlexMono Nerd Font" :size 18))
 #+end_src
-**** path
+***** path
 #+begin_src elisp
 (add-to-list 'load-path "~/.config/doom/lisp/")
 (add-to-list 'exec-path "~/.local/bin/")
 #+end_src
-**** yaml
+***** yaml
 #+begin_src elisp
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 #+end_src
-**** theme
+***** theme
 #+begin_src elisp
 (setq doom-theme 'catppuccin)
 #+end_src
-**** dired
+***** dired
 #+begin_src elisp
 (setq delete-by-moving-to-trash t trash-directory "~/.local/share/Trash/files/")
 
@@ -91,12 +160,12 @@
  "m" 'dired-mark
  "u" 'dired-unmark)
 #+end_src
-**** line-numbers
+***** line-numbers
 #+begin_src elisp
 (setq display-line-numbers-type 'relative
       display-line-numbers-width 5)
 #+end_src
-**** window borders
+***** window borders
 #+begin_src elisp
 (setq window-divider-default-right-width 3
       window-divider-default-bottom-width 3)
@@ -104,12 +173,12 @@
 ;; color
 (custom-set-faces! '(vertical-border :foreground "white"))
 #+end_src
-**** doom dashboard
+***** doom dashboard
 #+begin_src elisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 #+end_src
-*** Functions
-**** tuxikus/get-random-splash-image
+**** Functions
+***** tuxikus/get-random-splash-image
 #+begin_src elisp
 (defun tuxikus/get-random-splash-image ()
   (let* ((images (directory-files (concat doom-private-dir "splash/")))
@@ -119,7 +188,7 @@
 
 (setq fancy-splash-image (tuxikus/get-random-splash-image))
 #+end_src
-**** tuxikus/change-org-directory
+***** tuxikus/change-org-directory
 #+begin_src elisp
 (defun tuxikus/change-org-directory ()
   "Change the active org directory."
@@ -131,7 +200,7 @@
           org-roam-db-location (concat org-directory "/org-roam.db"))))
 
 #+end_src
-**** tuxikus/bookmarks
+***** tuxikus/bookmarks
 #+begin_src elisp
 (defun tuxikus/get-bookmarks-from-file ()
   "Get bookmarks from the bookmark file"
@@ -157,7 +226,7 @@
   (let* ((title (read-from-minibuffer "Title: "))
          (url (read-from-minibuffer "URL: "))
          (tags (read-from-minibuffer "Tags: ")))
-    (write-region (format "* [[%s][%s]] %s" url title tags) nil "~/.bookmarks.org" 'append)))
+    (write-region (format "* [[%s][%s]] %s\n" url title tags) nil "~/.bookmarks.org" 'append)))
 
 (defun tuxikus/edit-bookmark ()
   "TODO implement."
@@ -177,15 +246,15 @@
              (completing-read "Open: " (tuxikus/get-bookmarks-from-file))
              "\n") 1)))
 #+end_src
-**** tuxikus/get-jira-ticket-number
+***** tuxikus/get-jira-ticket-number
 #+begin_src elisp
 (defun tuxikus/get-jira-ticket-number (branch)
   (when (string-match "[A-Z]\\{8\\}-[0-9]*" branch)
     (message (match-string 0 branch))))
 
-(add-hook 'git-commit-setup-hook '(lambda () (insert (tuxikus/get-jira-ticket-number) (magit-get-current-branch))))
+(add-hook 'git-commit-setup-hook '(lambda () (insert (tuxikus/get-jira-ticket-number (magit-get-current-branch)))))
 #+end_src
-* init.el
+** init.el
 :PROPERTIES:
 :header-args: :tangle (if (string-equal system-type "darwin") "doom/.doom.d/init.el" "doom/.config/doom/init.el") :mkdirp yes
 :END:
@@ -234,7 +303,7 @@
        (evil +everywhere); come to the dark side, we have cookies
        file-templates    ; auto-snippets for empty files
        ;;fold              ; (nigh) universal code folding
-       ;;(format +onsave)  ; automated prettiness
+       (format +onsave)  ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
        ;;lispy             ; vim for lisp, for people who don't like vim
        ;;multiple-cursors  ; editing in many places at once
@@ -379,7 +448,7 @@
 
 #+end_src
 
-* packages.el
+** packages.el
 :PROPERTIES:
 :header-args: :tangle doom/.config/doom/packages.el :mkdirp yes
 :END:

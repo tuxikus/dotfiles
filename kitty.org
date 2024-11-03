@@ -1,9 +1,5 @@
-#+title: kitty config
-author: tuxikus
-#+date: <2024-10-05 Sat>
-#+startup: overview
-
-* config
+* Kitty terminal emulator
+** config
 :properties:
 :header-args: :tangle kitty/.config/kitty/kitty.conf :mkdirp yes :noeval
 :end:

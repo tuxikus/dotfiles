@@ -1,9 +1,4 @@
-#+title: Wezterm
-#+author: tuxikus
-#+date: <2024-10-04 Fri>
-#+startup: overview
-
-* config
+* Wezterm terminal emulator
 :properties:
 :header-args: :tangle wezterm/.config/wezterm/wezterm.lua :mkdirp yes :noeval
 :end:

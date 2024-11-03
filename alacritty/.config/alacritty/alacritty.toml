@@ -3,8 +3,8 @@ opacity = 1.0
 padding = { x = 10, y = 10 }
 
 [font]
-size = 18
-normal = { family = "Ubuntu Mono", style = "Regular" }
+size = 16
+normal = { family = "BlexMono Nerd Font", style = "Regular" }
 
 [cursor]
 style = { shape = "Beam", blinking = "On" }

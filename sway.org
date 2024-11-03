@@ -1,26 +1,21 @@
-#+title: Sway config
-#+author: tuxikus
-#+date: <2024-05-14 Tue>
-#+property: header-args :tangle sway/.config/sway/config :mkdirp yes
-#+startup: overview
-
-* Borders
+* Sway tiling window manager
+** Borders
 #+begin_src conf
 default_border pixel 5
 #+end_src
 
-* Gaps
+** Gaps
 #+begin_src conf
 gaps inner 8
 gaps outer 8
 #+end_src
 
-* Variables
-** Mod key
+** Variables
+*** Mod key
 #+begin_src conf
 set $mod Mod1
 #+end_src
-** Navigation
+*** Navigation
 Vim motions 😎
 #+begin_src conf
 set $left h
@@ -28,15 +23,15 @@ set $down j
 set $up k
 set $right l
 #+end_src
-** Terminal
+*** Terminal
 #+begin_src conf
 set $term kitty
 #+end_src
-** Application launcher
+*** Application launcher
 #+begin_src conf
 set $menu 'wofi --show drun'
 #+end_src
-* Output
+** Output
 You can get the names of your outputs by running:
 
 #+begin_src shell :tangle no
@@ -47,14 +42,14 @@ swaymsg -t get_outputs
 output DP-1 resolution 2560x1440@144Hz
 #+end_src
 
-** Wallpaper
+*** Wallpaper
 #+begin_src conf
 
 output * bg $HOME/.local/wallpaper/current.png fill
 
 #+end_src
 
-* Input
+** Input
 You can get the names of your inputs by running:
 
 #+begin_src shell :tangle no
@@ -71,25 +66,25 @@ input * accel_profile flat
 
 #+end_src
 
-* Key bindings
-** Applications
-*** Reload sway config
+** Key bindings
+*** Applications
+**** Reload sway config
 
 #+begin_src conf
 bindsym $mod+Shift+c reload
 #+end_src
 
-*** Exit Sway
+**** Exit Sway
 #+begin_src conf
 bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 #+end_src
 
-*** Kill focused window
+**** Kill focused window
 #+begin_src conf
 bindsym Mod4+q kill
 #+end_src
 
-*** Window operations with mouse
+**** Window operations with mouse
 - drag floating windows by holding down $mod and left mouse button.
 - resize them with right mouse button + $mod.
 
@@ -97,33 +92,33 @@ bindsym Mod4+q kill
 floating_modifier $mod normal
 #+end_src
 
-*** Terminal
+**** Terminal
 #+begin_src conf
-bindsym $mod+Return exec $term
+bindsym $mod+s exec $term
 #+end_src
 
-*** Application launcher
+**** Application launcher
 #+begin_src conf
 bindsym Mod4+Space exec $menu
 #+end_src
 
-*** Pipewire volume control
+**** Pipewire volume control
 #+begin_src conf
 bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 #+end_src
 
-*** Swaylock
+**** Swaylock
 #+begin_src conf
 bindsym $mod+Shift+Return exec swaylock -i $HOME/.local/wallpaper/current.png
 #+end_src
 
-*** Screenshot
+**** Screenshot
 #+begin_src conf
 bindsym Print exec grim -g "$(slurp)"
 #+end_src
-** Moving
-*** Focus
+*** Moving
+**** Focus
 #+begin_src conf
 bindsym $mod+$left focus left
 bindsym $mod+$down focus down
@@ -136,7 +131,7 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 #+end_src
 
-*** Window on workspace
+**** Window on workspace
 #+begin_src conf
 bindsym $mod+Shift+$left move left
 bindsym $mod+Shift+$down move down
@@ -149,7 +144,7 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 #+end_src
 
-*** Workspace
+**** Workspace
 #+begin_src conf
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
@@ -163,7 +158,7 @@ bindsym $mod+9 workspace number 9
 bindsym $mod+0 workspace number 10
 #+end_src
 
-*** Window to workspace
+**** Window to workspace
 #+begin_src conf
 bindsym $mod+Shift+1 move container to workspace number 1
 bindsym $mod+Shift+2 move container to workspace number 2
@@ -177,20 +172,20 @@ bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
 #+end_src
 
-** Layout
-*** Split
+*** Layout
+**** Split
 
 #+begin_src conf
 bindsym $mod+b splith
 bindsym $mod+v splitv
 #+end_src
 
-*** Fullscreen
+**** Fullscreen
 #+begin_src conf
 bindsym $mod+f fullscreen
 #+end_src
 
-*** Resize
+**** Resize
 #+begin_src conf
 bindsym $mod+r mode "resize"
 
@@ -210,7 +205,7 @@ mode "resize" {
 }
 #+end_src
 
-* Bar
+** Bar
 Enable [[https://github.com/Alexays/Waybar][Waybar]]
 
 #+begin_src conf
@@ -220,7 +215,7 @@ bar {
 }
 #+end_src
 
-* Include
+** Include
 #+begin_src conf
 include /etc/sway/config.d/*
 #+end_src

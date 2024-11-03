@@ -1,27 +1,23 @@
-#+title: Zsh config
-#+author: tuxikus
-#+date: <2024-08-12 Mon>
-#+startup: overview
-
-* .zprofile
+* Z shell (zsh)
+** .zprofile
 :PROPERTIES:
 :header-args: :tangle zsh/.zprofile :mkdirp yes
 :END:
-** umask
+*** umask
 #+begin_src shell
 umask 0022
 #+end_src
-* .zshrc
+** .zshrc
 :PROPERTIES:
 :header-args: :tangle zsh/.zshrc :mkdirp yes
 :END:
-** completion
+*** completion
 #+begin_src zsh
 autoload -Uz compinit
 compinit
 #+end_src
 
-** path
+*** path
 #+begin_src zsh
 if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
@@ -40,44 +36,48 @@ if [ -d "/opt/homebrew/bin" ]; then
 fi
 #+end_src
 
-** history
+*** history
 #+begin_src zsh
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 #+end_src
-** prompt
+*** prompt
 #+begin_src zsh
 PROMPT="%~ 🔮 "
 #+end_src
-** enable fzf
+*** fzf
 #+begin_src zsh
 source <(fzf --zsh)
+
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--multi"
 #+end_src
-** alias
+*** bat
 #+begin_src zsh
-alias ls='ls -G'
-alias ll='ls -lah'
+MANROFFOPT="-c"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+#+end_src
+*** alias
+#+begin_src zsh
 alias python='python3'
 alias s='ssh'
-alias saa='eval "$(ssh-agent -s)"'
-alias ska='eval "$(ssh-agent -k)"'
-alias ll='ls -l --color=auto'
 alias ls='ls --color=auto'
+alias ll='ls -l --color=auto'
 alias ff='fastfetch'
-alias lsblk-full='lsblk -o name,mountpoint,fstype,label,size,uuid'
-alias dnf-list-fuzzy='dnf list | fzf'
-alias dnf-info-fuzzy='dnf info $(dnf list | fzf)'
-alias szrc='source $HOME/.zshrc'
-alias t='tmux'
+alias t='tmux new-session -A -s local'
 #+end_src
 
-** env
+*** env
 #+begin_src zsh
 export VISUAL=emacs;
 export EDITOR=emacs;
 #+end_src
-** functions
+*** functions
 #+begin_src zsh
 
 export PROJECT_DIR="$HOME/work/projects"
@@ -93,44 +93,5 @@ rfe() {
             --preview 'bat --color=always {1} --highlight-line {2}' \
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
             --bind 'enter:become(emacsclient {1})'
-}
-
-rfv() {
-    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
-        fzf --ansi \
-            --color "hl:-1:underline,hl+:-1:underline:reverse" \
-            --delimiter : \
-            --preview 'bat --color=always {1} --highlight-line {2}' \
-            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-            --bind 'enter:become(nvim {1} +{2})'
-}
-
-tn() {
-    echo "Session name: "
-    read  name
-    tmux new-session -s "$name"
-}
-
-ts() {
-    if test -z "$TMUX"; then
-        tmux attach -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
-    else
-        tmux switch -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
-    fi
-}
-
-tk() {
-    tmux kill-session -t "$(tmux ls | awk -F ':' '{print $1}' | fzf)"
-}
-
-zellij-sessions () {
-    ZJ_SESSIONS=$(zellij list-sessions)
-    NO_SESSIONS=$(echo "${ZJ_SESSIONS}" | wc -l)
-
-    if [ "${NO_SESSIONS}" -ge 2 ]; then
-        zellij attach "$(echo "${ZJ_SESSIONS}" | fzf --ansi | awk '{print $1}')"
-    else
-        zellij attach -c
-    fi
 }
 #+end_src

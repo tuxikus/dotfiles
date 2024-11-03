@@ -1,32 +1,27 @@
-#+title: Bash
-#+author: tuxikus
-#+date: <2024-05-14 Tue>
-#+property: header-args :noeval :mkdirp yes
-#+startup: overview
-
-* bashrc
+* Bourne shell (bash)
+** bashrc
 :PROPERTIES:
 :header-args: :tangle bash/.bashrc :noeval
 :END:
-** Disable bell
+*** Disable bell
 #+begin_src shell
 bind 'set bell-style none'
 #+end_src
 
-** If not running interactively, dont do anything
+*** If not running interactively, dont do anything
 
 #+begin_src shell
 [[ $- != *i* ]] && return
 #+end_src
 
-** Environment variables
+*** Environment variables
 
 #+begin_src shell
 export VISUAL=emacs;
 export EDITOR=emacs;
 #+end_src
 
-** Path
+*** Path
 #+begin_src shell
 if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
@@ -41,24 +36,24 @@ if [ -d "$HOME/.qlot/bin" ]; then
 fi
 #+end_src
 
-** PS1
+*** PS1
 #+begin_src shell
 PS1='[\u@\h \W]\$ '
 #+end_src
 
-** Aliases
+*** Aliases
 #+begin_src shell
 alias ll='ls -l --color=auto'
 alias ls='ls --color=auto'
 alias ff='fastfetch'
 alias lsblk-full='lsblk -o name,mountpoint,fstype,label,size,uuid'
 #+end_src
-* bash_profile
+** bash_profile
 #+begin_src shell :tangle "bash/.bash_profile"
 umask 0022
 #+end_src
 
-* bash_logout
+** bash_logout
 #+begin_src shell :tangle bash/.bash_logout
 #+end_src
 

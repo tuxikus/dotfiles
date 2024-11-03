@@ -1,28 +1,23 @@
-#+title: Alacritty config
-#+author: tuxikus
-#+date: <2024-05-14 Tue>
-#+property: header-args :noeval :tangle alacritty/.config/alacritty/alacritty.toml :mkdirp yes
-#+startup: overview
-
-* Window
+* Alacritty terminal emulator
+** Window
 #+begin_src toml
 [window]
 opacity = 1.0
 padding = { x = 10, y = 10 }
 #+end_src
-* Font
+** Font
 #+begin_src toml :noweb yes
 [font]
-size = 18
-normal = { family = "Ubuntu Mono", style = "Regular" }
+size = 16
+normal = { family = "BlexMono Nerd Font", style = "Regular" }
 #+end_src
-* Cursor
+** Cursor
 #+begin_src toml :noweb yes
 [cursor]
 style = { shape = "Beam", blinking = "On" }
 vi_mode_style = { shape = "Block", blinking = "On" }
 #+end_src
-* Colors
+** Colors
 #+begin_src toml
 [env]
 TERM = "xterm-256color"

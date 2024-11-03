@@ -1,10 +1,5 @@
-#+title: AeroSpace config
-#+author: tuxikus
-#+date: <2024-05-14 Tue>
-#+property: header-args :noeval :tangle aerospace/.config/aerospace/aerospace.toml :mkdirp yes
-#+startup: overview
-
-* aerospace.toml
+* AeroSpace tiling window manager (macos)
+** aerospace.toml
 #+begin_src toml
 enable-normalization-flatten-containers = false
 enable-normalization-opposite-orientation-for-nested-containers = false
@@ -13,6 +8,7 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 [key-mapping]
 preset = 'dvorak'
+#preset = 'qwerty'
 
 [gaps]
 inner.horizontal = 13

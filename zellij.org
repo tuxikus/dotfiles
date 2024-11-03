@@ -1,13 +1,8 @@
-#+title: Zellij
-#+author: tuxikus
-#+date: <2024-09-16 Mon>
-#+startup: overview
-
-* config.kdl
+* Zellij terminal multiplexer
+** config.kdl
 :properties:
 :header-args: :tangle zellij/.config/zellij/config.kdl :mkdirp yes
 :end:
-
 #+begin_src config
 // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds {
