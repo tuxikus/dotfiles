@@ -139,10 +139,6 @@
 (add-to-list 'load-path "~/.config/doom/lisp/")
 (add-to-list 'exec-path "~/.local/bin/")
 #+end_src
-***** yaml
-#+begin_src elisp
-(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
-#+end_src
 ***** theme
 #+begin_src elisp
 (setq doom-theme 'catppuccin)
@@ -458,4 +454,6 @@
 (package! org-modern)
 (package! rg)
 (package! catppuccin-theme)
+(package! salt-mode)
+(package! kotlin-mode)
 #+end_src

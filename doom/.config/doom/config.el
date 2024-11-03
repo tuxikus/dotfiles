@@ -122,8 +122,6 @@
 (add-to-list 'load-path "~/.config/doom/lisp/")
 (add-to-list 'exec-path "~/.local/bin/")
 
-(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
-
 (setq doom-theme 'catppuccin)
 
 (setq delete-by-moving-to-trash t trash-directory "~/.local/share/Trash/files/")

@@ -3,3 +3,5 @@
 (package! org-modern)
 (package! rg)
 (package! catppuccin-theme)
+(package! salt-mode)
+(package! kotlin-mode)
