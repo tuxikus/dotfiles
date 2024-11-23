@@ -3,7 +3,7 @@
 #+date: <2024-06-14 Fri>
 #+startup: overview
 
-* !!! Deprecated !!! I switched to NixOS
+* !!! Deprecated !!! Switched to NixOS.
 
 * Configs
 
