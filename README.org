@@ -3,6 +3,8 @@
 #+date: <2024-06-14 Fri>
 #+startup: overview
 
+* !!! Deprecated !!! I switched to NixOS
+
 * Configs
 
 | [[file:doom.org][Emacs (Doom)]] | [[file:alacritty.org][Alacritty]]             | [[file:bash.org][Bash]]                 |
