@@ -1,0 +1,2 @@
+* Dotfiles (text based configurations)
+Dotfiles are fun.
