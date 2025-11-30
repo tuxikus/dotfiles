@@ -1,0 +1,115 @@
+#+title: Alacritty
+#+author: tuxikus
+#+property: header-args :mkdirp yes
+
+Alacritty is my main terminal emulator.
+
+* Main configuration file
+The main configuration file is located at =~/.config/alacritty/alacritty.toml=.
+
+#+begin_src toml :tangle ~/.config/alacritty/alacritty.toml :noweb yes
+<<window-conf>>
+<<font-conf>>
+<<env-conf>>
+<<catppuccin-latte>>
+#+end_src
+
+* Window configuration
+
+#+name: window-conf
+#+begin_src toml
+[window]
+padding = { x = 0, y = 0 }
+option_as_alt = "Both"
+#+end_src
+
+* Font configuration
+
+#+name: font-conf
+#+begin_src toml
+[font]
+normal = { family = "UbuntuMono Nerd Font Mono", style = "Regular" }
+size = 22.0
+#+end_src
+
+* Environment variables
+use fish as default shell
+
+#+name: env-conf
+#+begin_src toml
+[env]
+SHELL = "/opt/homebrew/bin/fish"
+#+end_src
+
+* Themes
+** Catppuccin Latte
+
+#+name: catppuccin-latte
+#+begin_src toml
+[colors.primary]
+background = "#eff1f5"
+foreground = "#4c4f69"
+dim_foreground = "#8c8fa1"
+bright_foreground = "#4c4f69"
+
+[colors.cursor]
+text = "#eff1f5"
+cursor = "#dc8a78"
+
+[colors.vi_mode_cursor]
+text = "#eff1f5"
+cursor = "#7287fd"
+
+[colors.search.matches]
+foreground = "#eff1f5"
+background = "#6c6f85"
+
+[colors.search.focused_match]
+foreground = "#eff1f5"
+background = "#40a02b"
+
+[colors.footer_bar]
+foreground = "#eff1f5"
+background = "#6c6f85"
+
+[colors.hints.start]
+foreground = "#eff1f5"
+background = "#df8e1d"
+
+[colors.hints.end]
+foreground = "#eff1f5"
+background = "#6c6f85"
+
+[colors.selection]
+text = "#eff1f5"
+background = "#dc8a78"
+
+[colors.normal]
+black = "#bcc0cc"
+red = "#d20f39"
+green = "#40a02b"
+yellow = "#df8e1d"
+blue = "#1e66f5"
+magenta = "#ea76cb"
+cyan = "#179299"
+white = "#5c5f77"
+
+[colors.bright]
+black = "#acb0be"
+red = "#d20f39"
+green = "#40a02b"
+yellow = "#df8e1d"
+blue = "#1e66f5"
+magenta = "#ea76cb"
+cyan = "#179299"
+white = "#6c6f85"
+
+[[colors.indexed_colors]]
+index = 16
+color = "#fe640b"
+
+[[colors.indexed_colors]]
+index = 17
+color = "#dc8a78"
+#+end_src
+
