@@ -1,0 +1,11 @@
+#+title: Ghostty
+#+author: tuxikus
+#+property: header-args :mkdirp yes
+
+* Config
+
+#+begin_src conf :tangle ~/.config/ghostty/config
+font-family = "UbuntuMono Nerd Font Mono"
+font-size = 25
+theme = Catppuccin Latte
+#+end_src
