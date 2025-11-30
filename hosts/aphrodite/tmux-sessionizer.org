@@ -1,0 +1,10 @@
+#+title: Tmux Sessionizer
+#+auhor: tuxikus
+#+property: header-args :mkdirp yes
+
+* Config
+
+#+begin_src conf :tangle ~/.config/tmux-sessionizer/tmux-sessionizer.conf
+TS_SEARCH_PATHS=(~/projects/work ~/projects/personal ~/projects/school)
+TS_MAX_DEPTH=2
+#+end_src
