@@ -239,7 +239,7 @@ zoxide init fish | source
 
 ** Catppuccin Latte
 
-#+begin_src conf :tangle ~/.config/fish/themes/catppuccin-latte-theme
+#+begin_src conf :tangle ~/.config/fish/themes/catppuccin-latte.theme
 # name: 'Catppuccin Latte'
 # url: 'https://github.com/catppuccin/fish'
 # preferred_background: eff1f5
