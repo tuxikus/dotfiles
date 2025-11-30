@@ -1,0 +1,89 @@
+#+title: Nushell
+#+author: tuxikus
+#+property: header-args :mkdirp yes
+
+* Config
+
+#+begin_src nu :tangle ~/.config/nushell/config.nu
+$env.config.edit_mode = 'vi'
+$env.config.history.max_size = 1_000_000
+$env.config.show_banner = false
+
+# Path
+$env.PATH = ($env.PATH | prepend '/opt/homebrew/bin')
+$env.PATH = ($env.PATH | prepend '/opt/homebrew/sbin')
+$env.PATH = ($env.PATH | prepend ($env.HOME + '/go/bin'))
+$env.PATH = ($env.PATH | prepend ((brew --prefix rustup) + '/bin'))
+$env.PATH = ($env.PATH | prepend ($env.HOME + '/.cargo/bin'))
+$env.PATH = ($env.PATH | prepend ($env.HOME + '/.goenv'))
+
+# Env
+$env.SSH_AUTH_SOCK = '$HOME/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock'
+$env.GOPRIVATE = 'bitbucket.org'
+$env.EZA_CONFIG_DIR = $'($env.HOME).config/eza'
+$env.EDITOR = '/opt/homebrew/bin/nvim'
+$env.NVIM_APPNAME = 'lazyvim'
+$env.STARSHIP_CONFIG = $'($env.HOME)/.config/starship/config.toml'
+
+# Aliases
+alias ll = ls
+alias l = ls
+alias nu-open = open
+alias open = ^open
+
+# History menu
+$env.config.menus ++= [{
+    name: history_menu
+    only_buffer_difference: false
+    marker: "Hist: "
+    type: {
+        layout: list
+        page_size: 10
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+}]
+
+# Functions
+def --env y [...args] {
+	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
+	yazi ...$args --cwd-file $tmp
+	let cwd = (open $tmp)
+	if $cwd != "" and $cwd != $env.PWD {
+		cd $cwd
+	}
+	rm -fp $tmp
+}
+
+# Keys
+# $env.config.keybindings ++= [{
+#     name: change_dir_with_fzf
+#     modifier: ALT
+#     keycode: Char_d
+#     mode: [vi_normal vi_insert]
+#     event: [
+#         { edit: Clear }
+#         {
+#           edit: InsertString,
+#           value: "cd (ls | where type == dir | each { |row| $row.name} | str join (char nl) | fzf | decode utf-8 | str trim)"
+#         }
+#         { send: Enter }
+#     ]
+# }]
+
+# Zoxide
+mkdir ($nu.data-dir | path join "vendor/autoload")
+zoxide init nushell | save -f ($nu.data-dir | path join "vendor/autoload/zoxide.nu")
+source ($nu.data-dir | path join "vendor/autoload/zoxide.nu")
+
+# Mise init
+mkdir ($nu.data-dir | path join "vendor/autoload")
+^mise activate nu | save -f ($nu.data-dir | path join "vendor/autoload/mise.nu")
+
+# Starship prompt
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+#+end_src
