@@ -41,6 +41,16 @@ set -ag status-right "#{E:@catppuccin_status_uptime}"
 
 ** Catppuccin
 
+*** catppuccin.conf
+
+#+begin_src conf :shebang #!/usr/bin/env bash :tangle ~/.config/tmux/plugins/catppuccin/tmux/catppuccin.tmux
+# Set path of script
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+tmux source "${PLUGIN_DIR}/catppuccin_options_tmux.conf"
+tmux source "${PLUGIN_DIR}/catppuccin_tmux.conf"
+#+end_src
+
 *** catppuccin_tmux.conf
 
 #+begin_src conf :tangle ~/.config/tmux/plugins/catppuccin/tmux/catppuccin_tmux.conf
@@ -269,6 +279,82 @@ set -gF mode-style "bg=#{@thm_surface_0},bold"
 set -gF clock-mode-colour "#{@thm_blue}"
 #+end_src
 
+*** catppuccin_options_tmux.conf
+
+#+begin_src conf :tangle ~/.config/tmux/plugins/catppuccin/tmux/catppuccin_options_tmux.conf
+# All options and their defaults.
+#
+# This is executed separately to the main configuration
+# so that options are set before parsing the rest of the config.
+
+# DO NOT USE -o IN YOUR OWN CONFIGURATION
+set -ogq @catppuccin_flavor "mocha"
+
+set -ogq @catppuccin_status_background "default"
+
+# Menu styling options
+set -ogq @catppuccin_menu_selected_style "fg=#{@thm_fg},bold,bg=#{@thm_overlay_0}"
+
+# Pane styling options (DO NOT USE -o IN YOUR OWN CONFIGURATION)
+set -ogq @catppuccin_pane_status_enabled "no" # set to "yes" to enable
+set -ogq @catppuccin_pane_border_status "off" # set to "yes" to enable
+set -ogq @catppuccin_pane_border_style "fg=#{@thm_overlay_0}"
+set -ogq @catppuccin_pane_active_border_style "##{?pane_in_mode,fg=#{@thm_lavender},##{?pane_synchronized,fg=#{@thm_mauve},fg=#{@thm_lavender}}}"
+set -ogq @catppuccin_pane_left_separator "█"
+set -ogq @catppuccin_pane_middle_separator "█"
+set -ogq @catppuccin_pane_right_separator "█"
+set -ogq @catppuccin_pane_color "#{@thm_green}"
+set -ogq @catppuccin_pane_background_color "#{@thm_surface_0}"
+set -ogq @catppuccin_pane_default_text "##{b:pane_current_path}"
+set -ogq @catppuccin_pane_default_fill "number"
+set -ogq @catppuccin_pane_number_position "left" # right, left
+
+# NOTE: Changes to make the option names more intuitive and more closely follow
+# the tmux naming conventions.
+# @catppuccin_window_current_background -> @catppuccin_window_current_number_color
+# @catppuccin_window_current_color      -> @catppuccin_window_current_text_color
+# @catppuccin_window_default_background -> @catppuccin_window_number_color
+# @catppuccin_window_default_color      -> @catppuccin_window_text_color
+# @catppuccin_window_status             -> @catppuccin_window_flags
+#
+# Removed:
+# @catppuccin_window_default_fill, @catppuccin_window_current_fill
+# Just set the number and text colors.
+
+# Window options (DO NOT USE -o IN YOUR OWN CONFIGURATION)
+set -ogq @catppuccin_window_status_style "basic" # basic, rounded, slanted, custom, or none
+set -ogq @catppuccin_window_text_color "#{@thm_surface_0}"
+set -ogq @catppuccin_window_number_color "#{@thm_overlay_2}"
+set -ogq @catppuccin_window_text " #T"
+set -ogq @catppuccin_window_number "#I"
+set -ogq @catppuccin_window_current_text_color "#{@thm_surface_1}"
+set -ogq @catppuccin_window_current_number_color "#{@thm_mauve}"
+set -ogq @catppuccin_window_current_text " #T"
+set -ogq @catppuccin_window_current_number "#I"
+set -ogq @catppuccin_window_number_position "left"
+
+# Window flags
+set -ogq @catppuccin_window_flags "none"
+set -ogq @catppuccin_window_flags_icon_last " 󰖰" # -
+set -ogq @catppuccin_window_flags_icon_current " 󰖯" # *
+set -ogq @catppuccin_window_flags_icon_zoom " 󰁌" # Z
+set -ogq @catppuccin_window_flags_icon_mark " 󰃀" # M
+set -ogq @catppuccin_window_flags_icon_silent " 󰂛" # ~
+set -ogq @catppuccin_window_flags_icon_activity " 󱅫" # #
+set -ogq @catppuccin_window_flags_icon_bell " 󰂞" # !
+# Matches icon order when using `#F` (`#!~[*-]MZ`)
+set -ogq @catppuccin_window_flags_icon_format "##{?window_activity_flag,#{E:@catppuccin_window_flags_icon_activity},}##{?window_bell_flag,#{E:@catppuccin_window_flags_icon_bell},}##{?window_silence_flag,#{E:@catppuccin_window_flags_icon_silent},}##{?window_active,#{E:@catppuccin_window_flags_icon_current},}##{?window_last_flag,#{E:@catppuccin_window_flags_icon_last},}##{?window_marked_flag,#{E:@catppuccin_window_flags_icon_mark},}##{?window_zoomed_flag,#{E:@catppuccin_window_flags_icon_zoom},} "
+
+# Status line options (DO NOT USE -o IN YOUR OWN CONFIGURATION)
+set -ogq @catppuccin_status_left_separator ""
+set -ogq @catppuccin_status_middle_separator ""
+set -ogq @catppuccin_status_right_separator " "
+set -ogq @catppuccin_status_connect_separator "yes" # yes, no
+
+# Maintain backwards compatibility. Use @catppuccin_status_module_bg_color if it is set.
+set -ogq @catppuccin_status_module_text_bg "#{?@catppuccin_status_module_bg_color,#{E:@catppuccin_status_module_bg_color},#{@thm_surface_0}}"
+#+end_src
+
 *** themes/catppuccin_latte_tmux.conf
 
 #+begin_src conf :tangle ~/.config/tmux/plugins/catppuccin/tmux/themes/catppuccin_latte_tmux.conf
@@ -440,7 +526,6 @@ set -ogq "@catppuccin_${MODULE_NAME}_text" " #{pane_current_command}"
 source -F "#{d:current_file}/../utils/status_module.conf"
 #+end_src
 
-
 *** status/battery.conf
 
 #+begin_src conf :tangle ~/.config/tmux/plugins/catppuccin/tmux/status/battery.conf
@@ -481,7 +566,6 @@ set -ogq "@catppuccin_${MODULE_NAME}_text" " #{l:#{clima}}"
 
 source -F "#{d:current_file}/../utils/status_module.conf"
 #+end_src
-
 
 *** status/cpu.conf
 
@@ -656,4 +740,55 @@ set -ogqF @catppuccin_weather_color "#{E:@thm_yellow}"
 set -ogq @catppuccin_weather_text " #{l:#{weather}}"
 
 source -F "#{d:current_file}/../utils/status_module.conf"
+#+end_src
+
+*** utils/status_module.conf
+
+#+begin_src conf :tangle ~/.config/tmux/plugins/catppuccin/tmux/utils/status_module.conf
+# vim:set ft=tmux:
+# Embedded style that ensures that modules look "connected"
+# when required.
+set -gqF @_ctp_connect_style \
+  "#{?#{==:#{@catppuccin_status_connect_separator},yes},,#[bg=default]}"
+
+# There are four colors involved:
+#
+# - Icon
+#   - fg: @catppuccin_status_[module]_icon_fg [default = crust]
+#   - bg: @catppuccin_status_[module]_icon_bg [required]
+# - Text
+#   - fg: @catppuccin_status_[module]_text_fg [default = foreground]
+#   - bg: @catppuccin_status_[module]_text_bg [default = @catppuccin_status_module_text_bg]
+
+set -ogqF "@catppuccin_status_${MODULE_NAME}_icon_fg" "#{E:@thm_crust}"
+set -ogqF "@catppuccin_status_${MODULE_NAME}_text_fg" "#{E:@thm_fg}"
+
+%if "#{==:#{@catppuccin_status_${MODULE_NAME}_icon_bg},}"
+  set -gqF "@catppuccin_status_${MODULE_NAME}_icon_bg" "#{@catppuccin_${MODULE_NAME}_color}"
+%endif
+
+%if "#{==:#{@catppuccin_status_${MODULE_NAME}_text_bg},}"
+  set -gqF @_ctp_module_text_bg "#{E:@catppuccin_status_module_text_bg}"
+%else
+  set -gqF @_ctp_module_text_bg "#{@catppuccin_status_${MODULE_NAME}_text_bg}"
+%endif
+
+set -gF "@catppuccin_status_${MODULE_NAME}" \
+  "#[fg=#{@catppuccin_status_${MODULE_NAME}_icon_bg}]#{@_ctp_connect_style}#{@catppuccin_status_left_separator}"
+
+set -agF "@catppuccin_status_${MODULE_NAME}" \
+  "#[fg=#{@catppuccin_status_${MODULE_NAME}_icon_fg},bg=#{@catppuccin_status_${MODULE_NAME}_icon_bg}]#{@catppuccin_${MODULE_NAME}_icon}"
+
+set -agF "@catppuccin_status_${MODULE_NAME}" \
+  "#{@catppuccin_status_middle_separator}"
+
+set -agF "@catppuccin_status_${MODULE_NAME}" \
+  "#[fg=#{@catppuccin_status_${MODULE_NAME}_text_fg},bg=#{@_ctp_module_text_bg}]"
+
+set -ag "@catppuccin_status_${MODULE_NAME}" "#{E:@catppuccin_${MODULE_NAME}_text}"
+
+set -agF "@catppuccin_status_${MODULE_NAME}" "#[fg=#{@_ctp_module_text_bg}]#{@_ctp_connect_style}#{@catppuccin_status_right_separator}"
+
+set -ug @_ctp_connect_style
+set -ug @_ctp_module_text_bg
 #+end_src
