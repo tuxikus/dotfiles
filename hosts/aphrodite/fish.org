@@ -1,0 +1,273 @@
+#+title: Fish
+#+author: tuxikus
+#+property: header-args :mkdirp yes
+
+* Config
+
+#+begin_src fish :eval never :tangle ~/.config/fish/config.fish
+set -g fish_greeting ""
+
+#
+# Theme
+#
+fish_config theme choose catppuccin-latte
+
+#
+# Prompt
+#
+function fish_prompt
+    set -l last_status $status
+    set -l stat
+    if test $last_status -ne 0
+        set stat (set_color red)"[$last_status]"(set_color normal)
+    end
+    set_color blue
+    string join '' -- (set_color blue) (prompt_pwd --full-length-dirs 10) (set_color normal) $stat
+    echo -n ">>> "
+end
+
+function fish_right_prompt
+    date '+%H:%M:%S'
+end
+
+#
+# Key bindings
+#
+fish_vi_key_bindings
+fish_default_key_bindings -M default
+
+set fish_cursor_default block
+set fish_cursor_insert line
+set fish_cursor_replace_one underscore
+set fish_cursor_replace underscore
+set fish_cursor_external line
+set fish_cursor_visual block
+
+#
+# Path
+#
+if test -d /opt/homebrew/bin
+    set -x PATH /opt/homebrew/bin $PATH
+end
+
+if test -d /opt/homebrew/sbin
+    set -x PATH /opt/homebrew/sbin $PATH
+end
+
+if test -d "$HOME/go/bin"
+    set -x PATH "$HOME/go/bin" $PATH
+end
+
+if test -d (brew --prefix rustup)/bin
+    set -x PATH (brew --prefix rustup)/bin $PATH
+end
+
+if test -d "$HOME/.cargo/bin"
+    set -x PATH "$HOME/.cargo/bin" $PATH
+end
+
+if test -d "$HOME/.local/bin"
+    set -x PATH "$HOME/.local/bin" $PATH
+end
+
+if test -d (brew --prefix)/opt/findutils/libexec/gnubin
+    set -x PATH (brew --prefix)/opt/findutils/libexec/gnubin $PATH
+end
+
+if test -d "$HOME/.goenv"
+    set -x PATH "$HOME/.goenv" $PATH
+end
+
+if test -d /Library/TeX/texbin
+    set -x PATH /Library/TeX/texbin $PATH
+end
+
+#
+# Env
+#
+set -gx SSH_AUTH_SOCK "$HOME/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+set -gx GOPRIVATE bitbucket.org
+set -gx GOENV_ROOT "$HOME/.goenv"
+set -gx EZA_CONFIG_DIR "$HOME/.config/eza"
+set -gx EDITOR /opt/homebrew/bin/nvim
+set -gx NVIM_APPNAME lazyvim
+set -gx STARSHIP_CONFIG "$HOME/.config/starship/config.toml"
+
+# rose-pine-moon
+#set -gx FZF_DEFAULT_OPTS "--color=fg:#908caa,bg:#232136,hl:#ea9a97 --color=fg+:#e0def4,bg+:#393552,hl+:#ea9a97 --color=border:#44415a,header:#3e8fb0,gutter:#232136 --color=spinner:#f6c177,info:#9ccfd8 --color=pointer:#c4a7e7,marker:#eb6f92,prompt:#908caa"
+
+# catppuccin-latte
+set -Ux FZF_DEFAULT_OPTS "\
+--color=bg+:#CCD0DA,bg:#EFF1F5,spinner:#DC8A78,hl:#D20F39 \
+--color=fg:#4C4F69,header:#D20F39,info:#8839EF,pointer:#DC8A78 \
+--color=marker:#7287FD,fg+:#4C4F69,prompt:#8839EF,hl+:#D20F39 \
+--color=selected-bg:#BCC0CC \
+--color=border:#9CA0B0,label:#4C4F69"
+
+if type -q fzf
+    fzf --fish | source
+end
+
+if type -q task
+    task --completion fish | source
+end
+
+if type -q starship
+    starship init fish | source
+end
+
+mise activate fish | source
+
+#
+# Aliases
+#
+alias ls='eza --icons=always'
+alias ll='ls -lah --git --inode --header'
+alias l='ls -1'
+alias e='emacs -nw'
+alias de='emacs -nw --init-directory ~/.doom-emacs.d'
+alias ce='emacs -nw --init-directory ~/.centaur-emacs.d'
+alias mgit='emacsclient -c -nw --eval "(progn (magit-status) (delete-other-windows))"'
+alias benchmark='hyperfine -N --warmup 3'
+alias rg='rg --no-heading'
+alias cd='z'
+alias cdi='zi'
+alias lg='lazygit'
+alias glint='GOGC=100 golangci-lint run'
+alias ta='tmux attach'
+
+#
+# Functions
+#
+function y
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    yazi $argv --cwd-file="$tmp"
+    if read -z cwd <"$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+        builtin cd -- "$cwd"
+    end
+    rm -f -- "$tmp"
+end
+
+function fzf-complete -d 'fzf completion and print selection back to commandline'
+    # As of 2.6, fish's "complete" function does not understand
+    # subcommands. Instead, we use the same hack as __fish_complete_subcommand and
+    # extract the subcommand manually.
+    set -l cmd (commandline -co) (commandline -ct)
+    switch $cmd[1]
+        case env sudo
+            for i in (seq 2 (count $cmd))
+                switch $cmd[$i]
+                    case '-*'
+                    case '*=*'
+                    case '*'
+                        set cmd $cmd[$i..-1]
+                        break
+                end
+            end
+    end
+    set cmd (string join -- ' ' $cmd)
+
+    set -l complist (complete -C$cmd)
+    set -l result
+    string join -- \n $complist | sort | eval (__fzfcmd) -m --select-1 --exit-0 --header '(commandline)' | cut -f1 | while read -l r
+        set result $result $r
+    end
+
+    set prefix (string sub -s 1 -l 1 -- (commandline -t))
+    for i in (seq (count $result))
+        set -l r $result[$i]
+        switch $prefix
+            case "'"
+                commandline -t -- (string escape -- $r)
+            case '"'
+                if string match '*"*' -- $r >/dev/null
+                    commandline -t -- (string escape -- $r)
+                else
+                    commandline -t -- '"'$r'"'
+                end
+            case '~'
+                commandline -t -- (string sub -s 2 (string escape -n -- $r))
+            case '*'
+                commandline -t -- (string escape -n -- $r)
+        end
+        [ $i -lt (count $result) ]; and commandline -i ' '
+    end
+
+    commandline -f repaint
+end
+
+function cdp
+    set dir (find $HOME/projects -maxdepth 2 -type d | fzf)
+    if test -n "$dir"
+        cd "$dir"
+    end
+end
+
+function killp
+    set proc (ps aux | fzf)
+    if test -z "$proc"
+        return
+    end
+    set pid (echo $proc | awk '{print $2}')
+    if test -n "$pid"
+        kill -9 $pid
+    end
+end
+
+function taskf
+    set task (task --list-all -s | fzf)
+    if test -z "$task"
+        return
+    end
+    set cmd "task $task"
+    history append $cmd
+    eval $cmd
+end
+
+function tk
+    set session (tmux ls | awk '{ print $1 }' | fzf)
+    if test -z "$session"
+        return
+    end
+    tmux kill-session -t "$session"
+end
+
+zoxide init fish | source
+#+end_src
+
+* Themes
+
+** Catppuccin Latte
+
+#+begin_src conf :tangle ~/.config/fish/themes/catppuccin-latte-theme
+# name: 'Catppuccin Latte'
+# url: 'https://github.com/catppuccin/fish'
+# preferred_background: eff1f5
+
+fish_color_normal 4c4f69
+fish_color_command 1e66f5
+fish_color_param dd7878
+fish_color_keyword 8839ef
+fish_color_quote 40a02b
+fish_color_redirection ea76cb
+fish_color_end fe640b
+fish_color_comment 8c8fa1
+fish_color_error d20f39
+fish_color_gray 9ca0b0
+fish_color_selection --background=ccd0da
+fish_color_search_match --background=ccd0da
+fish_color_option 40a02b
+fish_color_operator ea76cb
+fish_color_escape e64553
+fish_color_autosuggestion 9ca0b0
+fish_color_cancel d20f39
+fish_color_cwd df8e1d
+fish_color_user 179299
+fish_color_host 1e66f5
+fish_color_host_remote 40a02b
+fish_color_status d20f39
+fish_pager_color_progress 9ca0b0
+fish_pager_color_prefix ea76cb
+fish_pager_color_completion 4c4f69
+fish_pager_color_description 9ca0b0
+#+end_src
