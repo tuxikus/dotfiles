@@ -1,0 +1,70 @@
+#+title: Git
+#+author: tuxikus
+#+property: header-args :mkdirp yes
+
+* Config
+
+#+begin_src conf :tangle ~/.gitconfig.local
+[core]
+  editor = nvim
+  pager = delta
+
+[color]
+  ui = auto
+
+[diff]
+  tool = vimdiff
+
+[merge]
+  tool = vimdiff
+  conflictstyle = zdiff3
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  dark = true
+  side-by-side = true
+  syntax-theme = Catppuccin Latte
+
+[mergetool "vimdiff"]
+  cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED \
+        -c '$wincmd w' -c 'wincmd J'
+
+[alias]
+  a = add
+  aa = add all
+
+  b = branch
+
+  c = commit
+  cm = commit --message
+  ca = commit --amend
+  cam = commit --ammend --message
+
+  co = checkout
+
+  rm = rm --cached
+
+  d = diff
+
+  f = fetch
+  fa = fetch --all
+
+  g = grep
+
+  l = log
+  lo = log --oneline
+
+  m = merge
+
+  p = pull
+
+  s = status
+
+  w = worktree
+  wa = worktree add
+  wl = worktree list
+  wr = worktree remove
+#+end_src

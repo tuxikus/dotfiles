@@ -189,7 +189,7 @@ return {
 
 ** Compile Mode
 
-#+begin_src #+begin_src lua :tangle ~/.config/lazyvim/lua/plugins/compile-mode.lua
+#+begin_src lua :tangle ~/.config/lazyvim/lua/plugins/compile-mode.lua
 return {
   "ej-shafran/compile-mode.nvim",
   version = "^5.0.0",

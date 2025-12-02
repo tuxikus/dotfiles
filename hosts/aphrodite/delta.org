@@ -1,0 +1,10 @@
+#+title: Delta
+#+author: tuxikus
+#+property: header-args :mkdirp yes
+
+* Config
+
+#+begin_src conf :tangle ~/.config/delta/config
+[delta]
+light = true
+#+end_src

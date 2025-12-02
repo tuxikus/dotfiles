@@ -9,7 +9,7 @@ The main bat configuration file is located at =~/.config/bat/config=
 
 #+name: bat
 #+begin_src conf :tangle ~/.config/bat/config
---theme='catppuccin-latte'
+--theme='Catppuccin Latte'
 #+end_src
 
 * Themes

@@ -31,8 +31,7 @@ $conda\
 [](fg:sapphire bg:lavender)\
 $time\
 [ ](fg:lavender)\
-$cmd_duration\
-$line_break\
+$cmd_duration\n\
 $character"""
 
 palette = 'catppuccin_latte'

@@ -1,0 +1,28 @@
+#!/usr/bin/env emacs --script
+;; -*- mode: emacs-lisp -*-
+
+(require 'org)
+(require 'ob-tangle)
+
+(setq files '("./alacritty.org"
+              "./bat.org"
+              "./btop.org"
+              "./delta.org"
+              "./emacs/doom.org"
+              "./emacs/functions.org"
+              "./eza.org"
+              "./fish.org"
+              "./ghostty.org"
+              "./git.org"
+              "./lazyvim.org"
+              "./nushell.org"
+              "./scripts.org"
+              "./starship.org"
+              "./tmux-sessionizer.org"
+              "./tmux.org"
+              "./wezterm.org"
+              "./yazi.org"))
+
+(dolist (f files)
+  (message (format "Tangling %s" f))
+  (org-babel-tangle-file f))

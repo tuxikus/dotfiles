@@ -118,6 +118,8 @@ end
 
 mise activate fish | source
 
+eval (opam env)
+
 #
 # Aliases
 #
