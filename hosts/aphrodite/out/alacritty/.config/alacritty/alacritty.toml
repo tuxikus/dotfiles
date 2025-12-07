@@ -1,52 +1,11 @@
-#+title: Alacritty
-#+author: tuxikus
-#+property: header-args :mkdirp yes
-
-Alacritty is my main terminal emulator.
-
-* Main configuration file
-The main configuration file is located at =~/.config/alacritty/alacritty.toml=.
-
-#+begin_src toml :tangle out/alacritty/.config/alacritty/alacritty.toml :noweb yes
-<<window-conf>>
-<<font-conf>>
-<<env-conf>>
-<<catppuccin-latte>>
-#+end_src
-
-* Window configuration
-
-#+name: window-conf
-#+begin_src toml
 [window]
 padding = { x = 0, y = 0 }
 option_as_alt = "Both"
-#+end_src
-
-* Font configuration
-
-#+name: font-conf
-#+begin_src toml
 [font]
 normal = { family = "UbuntuMono Nerd Font Mono", style = "Regular" }
 size = 22.0
-#+end_src
-
-* Environment variables
-use fish as default shell
-
-#+name: env-conf
-#+begin_src toml
 [env]
 SHELL = "/opt/homebrew/bin/fish"
-#+end_src
-
-* Themes
-
-** Catppuccin Latte
-
-#+name: catppuccin-latte
-#+begin_src toml
 [colors.primary]
 background = "#eff1f5"
 foreground = "#4c4f69"
@@ -112,5 +71,3 @@ color = "#fe640b"
 [[colors.indexed_colors]]
 index = 17
 color = "#dc8a78"
-#+end_src
-
