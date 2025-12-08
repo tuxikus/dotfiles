@@ -1,10 +1,3 @@
-#+title: Nushell
-#+author: tuxikus
-#+property: header-args :mkdirp yes
-
-* Config
-
-#+begin_src nu :tangle out/nu/.config/nushell/config.nu
 $env.config.edit_mode = 'vi'
 $env.config.history.max_size = 1_000_000
 $env.config.show_banner = false
@@ -86,4 +79,3 @@ mkdir ($nu.data-dir | path join "vendor/autoload")
 # Starship prompt
 mkdir ($nu.data-dir | path join "vendor/autoload")
 starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
-#+end_src

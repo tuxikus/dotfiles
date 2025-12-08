@@ -1,10 +1,4 @@
-#+title: Scripts
-#+author: tuxikus
-#+property: header-args :mkdirp yes
-
-* tumx-sessionizer
-
-#+begin_src bash :shebang #!/usr/bin/env bash :tangle out/bin/.local/bin/tmux-sessionizer
+#!/usr/bin/env bash
 CONFIG_FILE_NAME="tmux-sessionizer.conf"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/tmux-sessionizer"
 CONFIG_FILE="$CONFIG_DIR/$CONFIG_FILE_NAME"
@@ -348,4 +342,3 @@ if ! has_session "$selected_name"; then
 fi
 
 switch_to "$selected_name"
-#+end_src

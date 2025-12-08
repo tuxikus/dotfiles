@@ -1,12 +1,3 @@
-#+title: Eza
-#+author: tuxikus
-#+property: header-args :mkdirp yes
-
-* Theme
-
-** Catppuccin latte blue
-
-#+begin_src conf :eval no :tangle out/eza/.config/eza/theme.yml
 colourful: true
 
 filekinds:
@@ -108,4 +99,3 @@ symlink_path: {foreground: "#04a5e5"}
 control_char: {foreground: "#209fb5"}
 broken_symlink: {foreground: "#d20f39"}
 broken_path_overlay: {foreground: "#acb0be"}
-#+end_src

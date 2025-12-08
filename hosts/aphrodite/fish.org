@@ -4,7 +4,7 @@
 
 * Config
 
-#+begin_src fish :eval never :tangle ~/.config/fish/config.fish
+#+begin_src fish :eval never :tangle out/fish/.config/fish/config.fish
 set -g fish_greeting ""
 
 #
@@ -137,6 +137,7 @@ alias cdi='zi'
 alias lg='lazygit'
 alias glint='GOGC=100 golangci-lint run'
 alias ta='tmux attach'
+alias linux='orb -m fedora'
 
 #
 # Functions
@@ -148,6 +149,10 @@ function y
         builtin cd -- "$cwd"
     end
     rm -f -- "$tmp"
+end
+
+function bo
+    bit list | fzf | awk '{ print $1 }' | xargs -I {} bit open {}
 end
 
 function fzf-complete -d 'fzf completion and print selection back to commandline'
@@ -234,6 +239,17 @@ function tk
     tmux kill-session -t "$session"
 end
 
+function git-add
+    git add (git ls-files \
+    --modified \
+    --deleted \
+    --other \
+    --exclude-standard \
+    --deduplicate \
+    $(git rev-parse --show-toplevel) \
+  | fzf --multi --reverse --no-sort)
+end
+
 zoxide init fish | source
 #+end_src
 
@@ -241,7 +257,7 @@ zoxide init fish | source
 
 ** Catppuccin Latte
 
-#+begin_src conf :tangle ~/.config/fish/themes/catppuccin-latte.theme
+#+begin_src conf :tangle out/fish/.config/fish/themes/catppuccin-latte.theme
 # name: 'Catppuccin Latte'
 # url: 'https://github.com/catppuccin/fish'
 # preferred_background: eff1f5

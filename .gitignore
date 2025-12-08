@@ -1,1 +1,2 @@
 .DS_Store
+**/out/tmux/.config/tmux/plugins/**

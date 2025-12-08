@@ -4,7 +4,7 @@
 
 * Config
 
-#+begin_src conf :tangle ~/.config/ghostty/config
+#+begin_src conf :tangle out/ghostty/.config/ghostty/config
 font-family = "UbuntuMono Nerd Font Mono"
 font-size = 25
 theme = Catppuccin Latte

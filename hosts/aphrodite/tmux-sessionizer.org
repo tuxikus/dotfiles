@@ -4,7 +4,7 @@
 
 * Config
 
-#+begin_src conf :tangle ~/.config/tmux-sessionizer/tmux-sessionizer.conf
+#+begin_src conf :tangle out/tmux-sessionizer/.config/tmux-sessionizer/tmux-sessionizer.conf
 TS_SEARCH_PATHS=(~/projects/work ~/projects/personal ~/projects/school)
-TS_MAX_DEPTH=2
+TS_MAX_DEPTH=1
 #+end_src

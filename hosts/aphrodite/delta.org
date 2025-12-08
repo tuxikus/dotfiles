@@ -4,7 +4,7 @@
 
 * Config
 
-#+begin_src conf :tangle ~/.config/delta/config
+#+begin_src conf :tangle out/delta/.config/delta/config
 [delta]
 light = true
 #+end_src

@@ -1,0 +1,7 @@
+* Usage
+
+#+begin_src shell
+stow -d out -t $HOME <packages>
+
+stow -d out -t $HOME alacritty bat
+#+end_src
