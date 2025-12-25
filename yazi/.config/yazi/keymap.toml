@@ -1,0 +1,8 @@
+[mgr]
+
+prepend_keymap = [
+  { on = [ "!" ], run = 'shell "$SHELL" --block', desc = "Open $SHELL here"},
+	{ on = [ "g", "r" ], run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"', desc = "Goto project root (git)"},
+	{ on = [ "g", "p", ], run = 'shell -- ya emit cd $HOME/personal', desc = "Goto personal space" },
+	{ on = [ "g", "w", ], run = 'shell -- ya emit cd $HOME/work', desc = "Goto work space" },
+]
