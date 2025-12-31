@@ -1,3 +1,9 @@
+[includeIF "gitdir:~/personal/"]
+  path = ~/.gitconfig.personal
+
+[includeIF "gitdir:~/work/"]
+  path = ~/.gitconfig.work
+
 [core]
     pager = delta
 

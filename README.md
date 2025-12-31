@@ -24,6 +24,18 @@ After four years of continuously customizing text editors like Emacs and Neovim,
   $ touch ~/.local.fish # put config here
 ```
 
+# Git config
+
+```shell
+  $ touch ~/.gitconfig.personal
+  $ touch ~/.gitconfig.work
+
+  # content
+  [user]
+	  email = <email>
+	  name = <user>
+```
+
 # Usage
 
 ```shell
