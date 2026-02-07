@@ -1,0 +1,10 @@
+[metadata]
+name = "task-target"
+description = "A channel to select a task"
+requirements = ["task", "grep", "tr", "cut"]
+
+[source]
+command = ["task --list-all -s"]
+
+[preview]
+command = "task --list-all | grep '{}' | tr -s ' ' | cut -d' ' -f3-"

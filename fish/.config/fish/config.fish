@@ -13,6 +13,20 @@ set -Ux FZF_DEFAULT_OPTS \
 
 alias ls="eza"
 
+abbr -ag gco "git checkout"
+abbr -ag gcof "git checkout (tv --inline git-branch)"
+abbr -ag ga "git add"
+abbr -ag gaa "git add --all"
+abbr -ag gs "git status"
+abbr -ag gc "git commit"
+abbr -ag gca "git commit --amend"
+abbr -ag --set-cursor="%" gcm "git commit -m '%'"
+abbr -ag gfa "git fetch --all"
+abbr -ag gp "git push"
+abbr -ag gpf "git push --force-with-lease"
+abbr -ag gl "git log"
+abbr -ag glo "git log --oneline"
+
 bind \cz 'fg 2>/dev/null; commandline -f repaint'
 
 function y
@@ -32,6 +46,8 @@ if test -f $HOME/.local.fish
     source $HOME/.local.fish
 end
 
-fzf --fish | source
+# fzf --fish | source
+# sk --shell fish | source
+tv init fish | source
 starship init fish | source
 zoxide init --cmd cd fish | source

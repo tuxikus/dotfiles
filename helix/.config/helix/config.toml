@@ -13,14 +13,12 @@ select = "underline"
 hidden = false
 
 [keys.normal]
+esc = ":w"
+C-q = ":wq"
 X = "select_line_above"
 ret = "goto_word"
-C-q = ":q!"
-C-s = ":wa"
-C-r = ":rla"
 C-y = ":sh zellij run -n Yazi -c -f -x 10%% -y 10%% --width 80%% --height 80%% -- bash ~/.config/helix/yazi-picker.sh open %{buffer_name}"
 space.B = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}"
-space.q = ":bc!"
 
 [keys.select]
 X = "select_line_above"

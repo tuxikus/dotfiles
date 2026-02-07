@@ -1,0 +1,20 @@
+[metadata]
+name = "git-status"
+description = "Show files from git status"
+requirements = ["git"]
+
+[source]
+command = "git status --short"
+
+[preview]
+command = "git diff '{}'"
+
+[actions.fetch]
+description = "Fetch from the selected remote"
+command = "git fetch '{}'"
+mode = "execute"
+
+[actions.remove]
+description = "Remove the selected remote"
+command = "git remote remove '{}'"
+mode = "execute"

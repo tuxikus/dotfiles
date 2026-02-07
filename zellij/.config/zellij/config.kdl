@@ -245,6 +245,7 @@ plugins {
 
 load_plugins {
 }
+
 web_client {
     font "monospace"
 }
@@ -259,5 +260,5 @@ serialize_pane_viewport true
 scrollback_lines_to_serialize 10000
 show_startup_tips false
 show_release_notes false
-pane_frames false
+pane_frames true
 default_layout "compact"
