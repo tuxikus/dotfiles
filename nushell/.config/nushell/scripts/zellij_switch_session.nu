@@ -1,5 +1,3 @@
-#!/usr/bin/env nu
-
 let session = (zellij list-sessions -s | tv | str trim)
 if ($session == "") {
   return
