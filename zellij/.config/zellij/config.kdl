@@ -1,3 +1,19 @@
+show_release_notes false
+show_startup_tips false
+default_shell "nu"
+default_mode "locked"
+session_name "default-session"
+attach_to_session true
+default_layout "default"
+pane_frames false
+theme "tokyo-night"
+
+ui {
+    pane_frames {
+        rounded_corners true
+    }
+}
+
 keybinds clear-defaults=true {
     locked {
         bind "Ctrl g" { SwitchToMode "normal"; }
@@ -144,6 +160,9 @@ keybinds clear-defaults=true {
             SwitchToMode "locked"
         }
     }
+    shared_among "normal" "pane" "tab" "move" "session" "scroll" {
+        bind "Ctrl c" { SwitchToMode "Locked"; }
+    }
     shared_among "normal" "locked" {
         bind "Alt left" { MoveFocusOrTab "left"; }
         bind "Alt down" { MoveFocus "down"; }
@@ -156,14 +175,35 @@ keybinds clear-defaults=true {
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt f" { ToggleFloatingPanes; }
         bind "Alt h" { MoveFocusOrTab "left"; }
-        bind "Alt i" { MoveTab "left"; }
+        bind "Alt Shift h" { MovePane "left"; }
         bind "Alt j" { MoveFocus "down"; }
+        bind "Alt Shift j" { MovePane "down"; }
         bind "Alt k" { MoveFocus "up"; }
+        bind "Alt Shift k" { MovePane "up"; }
         bind "Alt l" { MoveFocusOrTab "right"; }
+        bind "Alt Shift l" { MovePane "right"; }
         bind "Alt n" { NewPane; }
-        bind "Alt o" { MoveTab "right"; }
-        //bind "Alt p" { TogglePaneInGroup; }
-        //bind "Alt Shift p" { ToggleGroupMarking; }
+        bind "Alt p" { TogglePaneInGroup; }
+        bind "Alt Shift p" { ToggleGroupMarking; }
+        bind "Alt m" { ToggleFocusFullscreen; }
+        bind "Alt g" {
+            Run "nu" "-c" "lazygit" {
+                floating true;
+                close_on_exit true;
+            }
+        }
+        bind "Alt s" {
+            Run "nu" "~/.config/nushell/scripts/zellij_switch_session.nu" {
+                floating true;
+                close_on_exit true;
+            }
+        }
+        bind "Alt t" {
+            Run "nu" "~/.config/nushell/scripts/zellij_switch_tab.nu" {
+                floating true;
+                close_on_exit true;
+            }
+        }
     }
     shared_except "locked" "renametab" "renamepane" {
         bind "Ctrl g" { SwitchToMode "locked"; }
@@ -225,40 +265,3 @@ keybinds clear-defaults=true {
         bind "esc" { UndoRenamePane; SwitchToMode "pane"; }
     }
 }
-
-plugins {
-    about location="zellij:about"
-    compact-bar location="zellij:compact-bar"
-    configuration location="zellij:configuration"
-    filepicker location="zellij:strider" {
-        cwd "/Users/"
-    }
-    plugin-manager location="zellij:plugin-manager"
-    session-manager location="zellij:session-manager"
-    status-bar location="zellij:status-bar"
-    strider location="zellij:strider"
-    tab-bar location="zellij:tab-bar"
-    welcome-screen location="zellij:session-manager" {
-        welcome_screen true
-    }
-}
-
-load_plugins {
-}
-
-web_client {
-    font "monospace"
-}
- 
-theme "solarized-dark"
-default_mode "locked"
-default_shell "fish"
-scroll_buffer_size 50000
-session_name "default-session"
-attach_to_session true
-serialize_pane_viewport true
-scrollback_lines_to_serialize 10000
-show_startup_tips false
-show_release_notes false
-pane_frames true
-default_layout "compact"
