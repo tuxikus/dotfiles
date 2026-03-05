@@ -10,7 +10,7 @@ After four years of continuously customizing text editors like Emacs and Neovim,
 
 - 🪟 [Aerospace](https://github.com/nikitabobko/AeroSpace) (MacOS) -> [aerospace.toml](./aerospace/.config/aerospace/aerospace.toml)
 - 👻 [Ghostty](https://github.com/ghostty-org/ghostty) -> [config](./ghostty/.config/ghostty/config)
-- 🐟 [Fish](https://github.com/fish-shell/fish-shell) -> [config.fish](./fish/.config/fish/config.fish)
+- 🐚 [Nushell](https://github.com/nushell/nushell) -> [config.nu](./nushell/.config/nushell/config.nu)
 - 🧬 [Helix](https://github.com/helix-editor/helix) -> [helix.toml](./helix/.config/helix/config.toml)
 - 🧠 [Zellij](https://github.com/zellij-org/zellij) -> [config.kdl](./zellij/.config/zellij/config.kdl)
 - 🦆 [Yazi](https://github.com/sxyazi/yazi) -> [yazi.toml](./yazi/.config/yazi/yazi.toml)
