@@ -32,3 +32,5 @@ cmd-shift-7 = "move-node-to-workspace 7"
 cmd-shift-8 = "move-node-to-workspace 8"
 cmd-shift-9 = "move-node-to-workspace 9"
 cmd-shift-0 = "move-node-to-workspace 10"
+
+cmd-s = 'exec-and-forget ~/projects/cursor-spend-tracker-cli/notify-spend.sh'

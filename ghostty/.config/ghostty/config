@@ -1,5 +1,0 @@
-theme = "TokyoNight"
-
-macos-titlebar-style = hidden
-macos-non-native-fullscreen = true
-macos-option-as-alt = true
