@@ -1,0 +1,8 @@
+theme = "Atom One Light"
+
+macos-titlebar-style = hidden
+macos-non-native-fullscreen = true
+macos-option-as-alt = true
+
+font-family = Iosevka Nerd Font
+font-size = 20

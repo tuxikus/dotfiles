@@ -3,28 +3,24 @@ bindkey -v
 
 setopt HIST_IGNORE_SPACE
 
-export SSH_AUTH_SOCK="~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-export EDITOR="nvim"
+export EDITOR="hx"
 export HISTFILE=~/.zsh_history
 export HISTSIZE=100000
 export SAVEHIST=100000
 export KEYTIMEOUT=1
 
-export GOPROXY="https://proxy.golang.org,direct"
-export GOSUMDB="sum.golang.org"
-
 PATH="$HOME/.local/bin:$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
 PATH="$HOME/.go/bin:$PATH"
-PATH="/opt/homebrew/bin:$PATH"
-PATH="/opt/homebrew/opt/rustup/bin:$PATH"
 export path
 
-alias vim="nvim"
 alias sz="source ~/.zshrc"
-alias ls="list-files"
-alias ll="list-files"
-alias lg="lazygit"
+alias g="gitui"
+
+if [ -f "$HOME/.work.env" ]
+then
+  source "$HOME/.work.env"
+fi
 
 function y() {
   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
