@@ -229,6 +229,13 @@ config.keys = {
 	    flags = "TABS",
 	  },
 	},
+  {
+	  key = "g",
+	  mods = "ALT",
+	  action = act.SpawnCommandInNewTab {
+      args = { "lazygit" },
+    }
+	},
 }
 
 return config

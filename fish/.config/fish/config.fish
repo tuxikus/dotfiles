@@ -18,6 +18,7 @@ end
 
 abbr -a -- src "source ~/.config/fish/config.fish"
 abbr -a -- fd "fd -c never -H --exclude .git"
+abbr -a -- lg lazygit
 
 abbr -a --position anywhere -- @config ~/.config/
 
