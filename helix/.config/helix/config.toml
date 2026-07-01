@@ -1,9 +1,12 @@
-theme = "onelight"
+theme = "modus_operandi"
+# theme = "modus_vivendi"
 
 [editor]
 line-number = "relative"
 cursorline = true
-mouse = false
+trim-trailing-whitespace = true
+continue-comments = false
+rulers = [80, 100, 160]
 
 [editor.cursor-shape]
 insert = "bar"
@@ -13,11 +16,23 @@ select = "underline"
 [editor.file-picker]
 hidden = false
 
+[editor.statusline]
+left = ["mode", "spinner"]
+center = ["file-name"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+diagnostics = ["warning", "error"]
+workspace-diagnostics = ["warning", "error"]
+
 [keys.normal]
 X = "select_line_above"
 ret = "goto_word"
 C-y = ":sh zellij run -n Yazi -c -f -x 10%% -y 10%% --width 80%% --height 80%% -- bash ~/.config/helix/yazi-picker.sh open %{buffer_name}"
 space.B = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}"
+esc = ":w"
 
 [keys.select]
 X = "select_line_above"
