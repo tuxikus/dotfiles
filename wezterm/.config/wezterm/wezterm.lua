@@ -4,16 +4,17 @@ local os = require 'os'
 
 local config = wezterm.config_builder()
 local act = wezterm.action
+local mux = wezterm.mux
 
-config.color_scheme = 'Modus-Operandi'
-config.default_prog = { '/opt/homebrew/bin/fish', '-l' }
-
+--=============================================================================
+--=== configs
+--=============================================================================
 config.window_frame = {
 	font = wezterm.font 'Iosevka Nerd Font',
 	font_size = 20,
 }
-
-config.font_size = 20
+config.color_scheme = 'Modus-Operandi'
+config.default_prog = { '/opt/homebrew/bin/fish', '-l' }
 config.window_decorations = 'RESIZE'
 config.font = wezterm.font 'Iosevka Nerd Font'
 config.font_size = 20
@@ -27,6 +28,9 @@ config.inactive_pane_hsb = {
 	brightness = 0.5,
 }
 
+--=============================================================================
+--=== status line
+--=============================================================================
 wezterm.on('update-right-status', function(window, pane)
 	local palette = window:effective_config().resolved_palette
 	local bg = wezterm.color.parse(palette.background)
@@ -71,43 +75,94 @@ wezterm.on('update-right-status', function(window, pane)
   local date = wezterm.strftime('%H:%M')
   local workspace = window:active_workspace()
   local project = workspace:match("([^/]+)$")
-	window:set_right_status(wezterm.format({{Text = '[' .. project .. '] ' .. ' [' .. date .. ']'}}))
+	window:set_right_status(
+		wezterm.format(
+			{{Text = '[' .. project .. '] ' .. ' [' .. date .. ']'}}
+		)
+	)
 end)
 
-local workspace_switcher = wezterm.plugin.require('https://github.com/MLFlexer/smart_workspace_switcher.wezterm')
-workspace_switcher.zoxide_path = '/opt/homebrew/bin/zoxide'
-
--- open scrollback in hx -- TODO: $EDITOR
-wezterm.on('trigger-hx-with-scrollback', function(window, pane)
-  -- Retrieve the text from the pane
+--=============================================================================
+--=== open scrollback in editor
+--=============================================================================
+wezterm.on('open-scrollback-in-editor', function(window, pane)
+	local editor = os.getenv('EDITOR')
   local text = pane:get_lines_as_text(pane:get_dimensions().scrollback_rows)
-
-  -- Create a temporary file to pass to vim
   local name = os.tmpname()
   local f = io.open(name, 'w+')
   f:write(text)
   f:flush()
   f:close()
 
-  -- Open a new window running hx and tell it to open the file
   window:perform_action(
     act.SpawnCommandInNewTab {
-      args = { '/opt/homebrew/bin/hx', name },
+      args = { editor, name },
     },
     pane
   )
 
-  -- Wait "enough" time for vim to read the file before we remove it.
-  -- The window creation and process spawn are asynchronous wrt. running
-  -- this script and are not awaitable, so we just pick a number.
-  --
-  -- Note: We don't strictly need to remove this file, but it is nice
-  -- to avoid cluttering up the temporary directory.
   wezterm.sleep_ms(1000)
   os.remove(name)
 end)
 
 
+--=============================================================================
+--=== zoxide workspace switcher
+--=============================================================================
+local function zoxide_choices()
+  local ok, stdout = wezterm.run_child_process({
+    "zoxide",
+    "query",
+    "--list",
+  })
+
+  if not ok then
+    return {}
+  end
+
+  local choices = {}
+
+  for path in stdout:gmatch("[^\n]+") do
+    table.insert(choices, {
+      id = path,
+      label = path,
+    })
+  end
+
+  return choices
+end
+
+wezterm.on('zoxide-workspace-switcher', function(window, pane)
+	  window:perform_action(
+    act.InputSelector({
+      title = "New workspace",
+      fuzzy = true,
+      choices = zoxide_choices(),
+      action = wezterm.action_callback(function(win, _, path)
+        if not path then
+          return
+        end
+
+        local workspace = path:match("([^/]+)$")
+
+        win:perform_action(
+          act.SwitchToWorkspace({
+            name = workspace,
+            spawn = {
+              cwd = path,
+            },
+          }),
+          pane
+        )
+      end),
+    }),
+    pane
+  )
+end)
+
+--=============================================================================
+--=== keys
+--=============================================================================
 config.keys = {
 	{ key = ' ', mods = 'ALT', action = act.QuickSelectArgs },
 	{ key = 'x', mods = 'ALT', action = act.ActivateCopyMode },
@@ -116,9 +171,9 @@ config.keys = {
 	{ key = 'q', mods = 'ALT', action = act.CloseCurrentPane { confirm = true }, },
 	{ key = 'o', mods = 'ALT', action = act.PaneSelect },
 	{ key = 'f', mods = 'ALT', action = act.Search('CurrentSelectionOrEmptyString') },
-	{ key = 't', mods = 'ALT', action = act.SpawnTab 'CurrentPaneDomain' },
+	{ key = 't', mods = 'ALT|SHIFT', action = act.SpawnTab 'CurrentPaneDomain' },
 	{ key = 's', mods = 'ALT', action = act.ShowLauncherArgs { flags = 'FUZZY|WORKSPACES' } },
-	{ key = 's', mods = 'ALT|SHIFT', action = workspace_switcher.switch_workspace() },
+	{ key = 's', mods = 'ALT|SHIFT', action = act.EmitEvent 'zoxide-workspace-switcher' },
 	{ key = 'n', mods = 'ALT|SHIFT', action = act.SplitVertical },
 	{ key = 'l', mods = 'ALT|SHIFT', action = act.AdjustPaneSize { 'Right', 5 } },
 	{ key = 'h', mods = 'ALT|SHIFT', action = act.AdjustPaneSize { 'Left', 5 } },
@@ -153,8 +208,27 @@ config.keys = {
 	{
 	  key = 'e',
 	  mods = 'ALT',
-	  action = act.EmitEvent 'trigger-hx-with-scrollback',
+	  action = act.EmitEvent 'open-scrollback-in-editor',
   },
+  {
+    key = 'e',
+    mods = 'ALT|SHIFT',
+    action = act.PromptInputLine {
+      description = 'Enter new name for tab',
+      action = wezterm.action_callback(function(window, pane, line)
+        if line then
+          window:active_tab():set_title(line)
+        end
+      end),
+    },
+  },
+  {
+	  key = "t",
+	  mods = "ALT",
+	  action = wezterm.action.ShowLauncherArgs {
+	    flags = "TABS",
+	  },
+	},
 }
 
 return config
