@@ -1,0 +1,6 @@
+PATH="$HOME/.local/bin:$PATH"
+PATH="$HOME/.cargo/bin:$PATH"
+PATH="$HOME/.go/bin:$PATH"
+export path
+
+. "$HOME/.work.env"

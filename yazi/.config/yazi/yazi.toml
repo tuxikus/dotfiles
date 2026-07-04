@@ -1,4 +1,0 @@
-[mgr]
-show_hidden = true
-linemode = "mtime"
-sort_by = "mtime"
