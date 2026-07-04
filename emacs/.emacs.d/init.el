@@ -25,6 +25,7 @@
 (global-set-key (kbd "C-x B") #'ibuffer)
 (global-set-key (kbd "C-c g") #'magit)
 (global-set-key (kbd "C-c c") #'compile)
+(global-set-key (kbd "C-c w") #'whitespace-mode)
 
 (defun tuxikus/copy-line ()
   (interactive)
